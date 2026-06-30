@@ -1,0 +1,2 @@
+- Změnit plural Subjects ve všech souborech na singular - subject = konvence
+- Dopsat dokumentaci !!!
