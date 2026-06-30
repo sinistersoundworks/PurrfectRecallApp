@@ -1,0 +1,99 @@
+
+<h2 class="sr-only">Složková struktura projektu studijní aplikace</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:1rem 0">
+
+<div style="background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem">
+  <p style="font-size:13px;font-weight:500;color:var(--text-secondary);margin:0 0 10px">
+    <i class="ti ti-server" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>backend/
+  </p>
+  <pre style="font-size:12px;color:var(--text-primary);line-height:1.7;margin:0;font-family:var(--font-mono)">app/
+├── main.py
+├── config.py
+├── database.py
+│
+├── routes/
+│   ├── auth.py
+│   ├── cards.py
+│   ├── subjects.py
+│   ├── topics.py
+│   ├── review.py
+│   ├── stats.py
+│   └── ai.py
+│
+├── services/
+│   ├── fsrs/
+│   │   ├── algorithm.py
+│   │   ├── scheduler.py
+│   │   └── models.py
+│   ├── card_service.py
+│   ├── review_service.py
+│   ├── stats_service.py
+│   └── ai_service.py
+│
+├── models/
+│   ├── user.py
+│   ├── subject.py
+│   ├── topic.py
+│   ├── card.py
+│   ├── review_log.py
+│   └── tag.py
+│
+├── schemas/
+│   ├── card.py
+│   ├── review.py
+│   └── stats.py
+│
+├── middleware/
+│   ├── auth.py
+│   └── rate_limit.py
+│
+└── migrations/
+    └── alembic/</pre>
+</div>
+
+<div style="background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem">
+  <p style="font-size:13px;font-weight:500;color:var(--text-secondary);margin:0 0 10px">
+    <i class="ti ti-brand-react" aria-hidden="true" style="font-size:15px;vertical-align:-2px;margin-right:6px"></i>frontend/
+  </p>
+  <pre style="font-size:12px;color:var(--text-primary);line-height:1.7;margin:0;font-family:var(--font-mono)">src/
+├── main.tsx
+├── App.tsx
+│
+├── pages/
+│   ├── Dashboard.tsx
+│   ├── StudySession.tsx
+│   ├── CardManager.tsx
+│   ├── SubjectView.tsx
+│   ├── Statistics.tsx
+│   └── Settings.tsx
+│
+├── components/
+│   ├── cards/
+│   │   ├── Flashcard.tsx
+│   │   ├── MultipleChoice.tsx
+│   │   └── ActiveRecall.tsx
+│   ├── dashboard/
+│   │   ├── StreakWidget.tsx
+│   │   ├── DueToday.tsx
+│   │   └── ProgressChart.tsx
+│   └── ui/
+│       ├── RatingButtons.tsx
+│       └── TagPicker.tsx
+│
+├── stores/
+│   ├── studyStore.ts
+│   ├── cardStore.ts
+│   └── statsStore.ts
+│
+├── hooks/
+│   ├── useStudySession.ts
+│   └── useFSRSStats.ts
+│
+└── api/
+    ├── client.ts
+    ├── cards.ts
+    ├── review.ts
+    └── ai.ts</pre>
+</div>
+
+</div>
