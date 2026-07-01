@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Subjects</title>
+</head>
+<body>
+
+  <h1>Subjects</h1>
+
+  <input id="name" placeholder="name">
+  <input id="description" placeholder="description">
+  <button onclick="createSubject()">Add</button>
+
+  <button onclick="loadSubjects()">Refresh</button>
+
+  <ul id="list"></ul>
+
+  <script>
+    const API = "http://127.0.0.1:8000";
+
+    async function loadSubjects() {
+      const response = await fetch(`${API}/subjects/`);
+      const subjects = await response.json();
+
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      subjects.forEach(subject => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+        ${subject.name}: ${subject.description}
+        <button onclick="deleteSubject(${subject.id})">Delete</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    async function createSubject() {
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+
+      await fetch(`${API}/subjects/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, description })
+      });
+
+      loadSubjects();
+    }
+
+    async function deleteSubject(id) {
+    await fetch(`${API}/subjects/${id}`, {
+        method: "DELETE"
+    });
+
+    loadSubjects();
+    }
+
+
+    loadSubjects();
+  </script>
+
+</body>
+</html>
