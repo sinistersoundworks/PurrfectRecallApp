@@ -11,7 +11,7 @@ print("SUBJECTS LOADED")
 router = APIRouter(prefix="/subjects", tags=["Subjects"])
 
 
-@router.post("/", response_model=SubjectResponse)
+@router.post("", response_model=SubjectResponse)
 def create_subject(subject: SubjectCreate, db: Session = Depends(get_db)):
     print("Subjects Router Loaded")
 
@@ -26,7 +26,7 @@ def create_subject(subject: SubjectCreate, db: Session = Depends(get_db)):
 
     return db_subject
 
-@router.get("/", response_model=list[SubjectResponse])
+@router.get("", response_model=list[SubjectResponse])
 def get_subjects(db: Session = Depends(get_db)):
     return db.query(Subject).all()
 
