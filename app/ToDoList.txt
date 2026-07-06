@@ -1,2 +1,2 @@
-- Změnit plural Subjects ve všech souborech na singular - subject = konvence
+OPRAVIT Update tlačítko na edit
 - Dopsat dokumentaci !!!
