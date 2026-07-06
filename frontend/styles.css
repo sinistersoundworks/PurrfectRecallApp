@@ -82,3 +82,47 @@ strong{
     max-width:1100px;
     margin:auto;
 }
+
+.hidden{ display:none }
+
+.study-controls{ display:flex; gap:8px; align-items:center; margin-bottom:12px }
+.study-card{ background:#0f1724; padding:24px; border-radius:12px; text-align:center }
+.study-card .question{ font-size:20px; margin-bottom:12px }
+.study-card .answer{ color:#9ca3af; margin-bottom:12px }
+.review-buttons button{ margin-right:6px }
+
+.confidence-row{ display:flex; gap:8px; align-items:center; justify-content:center; margin-top:12px }
+.confidence-row input[type="range"]{ width:240px }
+.confidence-value{ min-width:48px; text-align:center }
+
+/* Navbar */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:14px 20px;
+    background:linear-gradient(90deg, rgba(37,99,235,0.12), rgba(37,99,235,0.04));
+    border-radius:12px;
+    margin-bottom:24px;
+}
+.nav-left{
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+.nav-brand{
+    font-weight:700;
+    font-size:18px;
+    color:#60a5fa;
+    margin-right:8px;
+}
+.nav-link{
+    color:#cbd5e1;
+    text-decoration:none;
+    padding:8px 10px;
+    border-radius:8px;
+}
+.nav-link:hover{ background: rgba(255,255,255,0.02); color:#fff }
+.nav-right{ display:flex; gap:8px; align-items:center }
+.auth-badge{ background:#0ea5a5; color:#022; padding:6px 10px; border-radius:999px; font-weight:600 }

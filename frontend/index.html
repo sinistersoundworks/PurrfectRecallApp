@@ -11,29 +11,77 @@
 <body>
 
   <div class="container">
-    <div class="section">
-      <h1>Subjects</h1>
+    <nav class="navbar">
+      <div class="nav-left">
+        <div class="nav-brand">StudyWeb</div>
+        <a href="#" class="nav-link" onclick="showHome()">Home</a>
+        <a href="#" class="nav-link" onclick="showStudy()">Study</a>
+        <a href="#" class="nav-link" onclick="showDecks()">My Decks</a>
+        <a href="#" class="nav-link" onclick="showStats()">Stats</a>
+      </div>
+      <div class="nav-right" id="navRight">
+        <button onclick="showLogin()" id="loginBtn">Login</button>
+        <button onclick="showRegister()" id="registerBtn">Register</button>
+      </div>
+    </nav>
 
-      <input id="name" placeholder="name">
-      <input id="description" placeholder="description">
-      <button onclick="createSubject()">Add</button>
-
-      <button onclick="loadSubjects()">Refresh</button>
-
-      <ul id="list"></ul>
+    <div id="homeSection" class="section">
+      <h1>Welcome to StudyWeb</h1>
+      <p>StudyWeb is a lightweight spaced-repetition app. Use <strong>My Decks</strong> to create subjects (decks), add flashcards, and review them using spaced-repetition scheduling.</p>
+      <p>Click <strong>My Decks</strong> in the navigation to manage your subjects and flashcards.</p>
     </div>
 
-    
-      <h2>Create Flashcard</h2>
-      <select id="subjectSelect"></select>
-      <input id="question" placeholder="question">
-      <input id="answer" placeholder="answer">
-      <button onclick="createFlashcard()">Create Flashcard</button>
-      <button onclick="loadFlashcards()">Show Flashcards</button>
+    <div id="studySection" class="hidden section">
+      <h1>Study</h1>
+      <div class="study-controls">
+        <label for="studySubject">Choose deck:</label>
+        <select id="studySubject"></select>
+        <button onclick="startStudy()">Start Study</button>
+        <button onclick="stopStudy()">Stop</button>
+      </div>
 
-    </div class="section">
-      <h2>Flashcards</h2>
-      <ul id="flashcardList"></ul>
+      <div id="studyArea" class="study-card hidden">
+        <div class="question" id="studyQuestion"></div>
+        <div class="answer hidden" id="studyAnswer"></div>
+        <div>
+          <button onclick="toggleStudyReveal()" id="studyRevealBtn">Show</button>
+        </div>
+        <div class="confidence-row" id="studyConfidenceRow">
+          <label for="confidenceRange">Confidence</label>
+          <input id="confidenceRange" type="range" min="0" max="100" value="50" oninput="updateConfidenceValue(this.value)">
+          <div class="confidence-value" id="confidenceValue">50%</div>
+          <button onclick="submitConfidence()">Submit</button>
+        </div>
+        <div id="studyProgress" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div id="decksView" class="hidden">
+      <div class="section">
+        <h1>Subjects</h1>
+
+        <input id="name" placeholder="name">
+        <input id="description" placeholder="description">
+        <button onclick="createSubject()">Add</button>
+
+        <button onclick="loadSubjects()">Refresh</button>
+
+        <ul id="list"></ul>
+      </div>
+
+      <div class="section">
+        <h2>Create Flashcard</h2>
+        <select id="subjectSelect"></select>
+        <input id="question" placeholder="question">
+        <input id="answer" placeholder="answer">
+        <button onclick="createFlashcard()">Create Flashcard</button>
+        <button onclick="loadFlashcards()">Show Flashcards</button>
+      </div>
+
+      <div class="section">
+        <h2>Flashcards</h2>
+        <ul id="flashcardList"></ul>
+      </div>
     </div>
 
       <script>
@@ -120,12 +168,18 @@
 
           cards.forEach(card => {
             const li = document.createElement('li');
-            li.innerHTML = `
-              <strong>${card.question}</strong> — ${card.answer}
-              (subject: ${card.subject_id})
-              <button onclick="editFlashcard(${card.id}, ${card.subject_id}, '${escapeJs(card.question)}', '${escapeJs(card.answer)}')">Edit</button>
-              <button onclick="deleteFlashcard(${card.id})">Delete</button>
-            `;
+              li.innerHTML = `
+                <div class="card-front"><strong>${card.question}</strong></div>
+                <div class="card-back hidden">${card.answer}</div>
+                <div>(subject: ${card.subject_id})</div>
+                <div>
+                  <button onclick="toggleReveal(this)">Show</button>
+                  <button onclick="editFlashcard(${card.id}, ${card.subject_id}, '${escapeJs(card.question)}', '${escapeJs(card.answer)}')">Edit</button>
+                  <button onclick="deleteFlashcard(${card.id})">Delete</button>
+                </div>
+                <!-- rating removed on My Decks per request -->
+                
+              `;
             ul.appendChild(li);
           });
         }
@@ -133,6 +187,45 @@
         function escapeJs(str) {
           if (!str) return '';
           return str.replaceAll("'", "\\'").replaceAll('\n','\\n');
+        }
+
+        // Toggle reveal for a specific card using scoped DOM access
+        function toggleReveal(button) {
+          const li = button.closest('li');
+          if (!li) return;
+          const back = li.querySelector('.card-back');
+          if (!back) return;
+          const showing = !back.classList.contains('hidden');
+          if (showing) {
+            back.classList.add('hidden');
+            button.textContent = 'Show';
+          } else {
+            back.classList.remove('hidden');
+            button.textContent = 'Hide';
+          }
+        }
+
+        async function reviewFlashcard(id, quality) {
+          try {
+            const res = await fetch(`${FLASHCARDS_API}/${id}/review`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ quality })
+            });
+
+            if (!res.ok) {
+              const txt = await res.text();
+              return alert('Review failed: ' + res.status + '\n' + txt);
+            }
+
+            const updated = await res.json();
+            const due = updated.due_date ?? 'N/A';
+            // small feedback then refresh list
+            alert('Reviewed — next due: ' + due);
+            await loadFlashcards();
+          } catch (err) {
+            alert('Review error: ' + err);
+          }
         }
 
         async function editFlashcard(id, subject_id, oldQuestion, oldAnswer) {
@@ -185,7 +278,205 @@
           loadSubjects();
         }
 
-        loadSubjects();
+        // don't auto-load on script parse; load when user opens My Decks
+      </script>
+      <script>
+        // Auth UI: show login/register or user badge. Uses backend if /auth endpoints exist, otherwise simulates.
+        function updateAuthUI() {
+          const navRight = document.getElementById('navRight');
+          const token = localStorage.getItem('token');
+          const user = localStorage.getItem('user');
+          navRight.innerHTML = '';
+
+          if (token && user) {
+            const span = document.createElement('span');
+            span.className = 'auth-badge';
+            span.textContent = user;
+            navRight.appendChild(span);
+
+            const logout = document.createElement('button');
+            logout.textContent = 'Logout';
+            logout.onclick = () => { localStorage.removeItem('token'); localStorage.removeItem('user'); updateAuthUI(); };
+            navRight.appendChild(logout);
+          } else {
+            const login = document.createElement('button');
+            login.textContent = 'Login';
+            login.onclick = showLogin;
+            navRight.appendChild(login);
+
+            const reg = document.createElement('button');
+            reg.textContent = 'Register';
+            reg.onclick = showRegister;
+            navRight.appendChild(reg);
+          }
+        }
+
+        async function attemptAuthFetch(path, payload) {
+          try {
+            const res = await fetch(`${API}${path}`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            });
+            return res;
+          } catch (e) { return null; }
+        }
+
+        async function showLogin() {
+          const username = prompt('Username:'); if (!username) return;
+          const password = prompt('Password:'); if (password === null) return;
+
+          const res = await attemptAuthFetch('/auth/login', { username, password });
+          if (res && res.ok) {
+            const data = await res.json(); localStorage.setItem('token', data.token ?? 'token'); localStorage.setItem('user', data.username ?? username);
+            updateAuthUI(); alert('Logged in'); return;
+          }
+          localStorage.setItem('token', 'fake-' + Date.now()); localStorage.setItem('user', username); updateAuthUI(); alert('Simulated login');
+        }
+
+        async function showRegister() {
+          const username = prompt('Choose username:'); if (!username) return;
+          const password = prompt('Choose password:'); if (password === null) return;
+          const res = await attemptAuthFetch('/auth/register', { username, password });
+          if (res && res.ok) { alert('Registered — you can now login'); return; }
+          alert('Simulated register — you can now login');
+        }
+
+        // initialize
+        updateAuthUI();
+      </script>
+      <script>
+        // View-switching for simple SPA and Study flow
+        function showHome(){
+          document.getElementById('homeSection').classList.remove('hidden');
+          document.getElementById('decksView').classList.add('hidden');
+          document.getElementById('studySection').classList.add('hidden');
+        }
+
+        function showStudy(){
+          document.getElementById('homeSection').classList.add('hidden');
+          document.getElementById('decksView').classList.add('hidden');
+          document.getElementById('studySection').classList.remove('hidden');
+          loadStudySubjects();
+          stopStudy();
+        }
+
+        function showDecks(){
+          document.getElementById('homeSection').classList.add('hidden');
+          document.getElementById('decksView').classList.remove('hidden');
+          document.getElementById('studySection').classList.add('hidden');
+          loadSubjects();
+          loadFlashcards();
+        }
+
+        function showStats(){ alert('Stats — not implemented') }
+
+        // Study logic
+        let studyQueue = [];
+        let studyIndex = 0;
+
+        async function loadStudySubjects(){
+          const res = await fetch(SUBJECTS_API);
+          const subjects = await res.json();
+          const sel = document.getElementById('studySubject');
+          sel.innerHTML = '';
+          subjects.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.name;
+            sel.appendChild(opt);
+          });
+        }
+
+        function shuffle(arr){
+          for(let i = arr.length-1;i>0;i--){
+            const j = Math.floor(Math.random()*(i+1));
+            [arr[i],arr[j]] = [arr[j],arr[i]];
+          }
+        }
+
+        async function startStudy(){
+          const subjectId = document.getElementById('studySubject').value;
+          if (!subjectId) return alert('Select a deck');
+          const res = await fetch(`${FLASHCARDS_API}?subject_id=${subjectId}`);
+          if (!res.ok) return alert('Failed to load cards: ' + res.status);
+          const cards = await res.json();
+
+          // prefer due cards
+          const now = new Date();
+          studyQueue = cards.filter(c => !c.due_date || new Date(c.due_date) <= now);
+          if (studyQueue.length === 0) studyQueue = cards.slice();
+          shuffle(studyQueue);
+          studyIndex = 0;
+          if (studyQueue.length === 0) return alert('No cards in this deck');
+          document.getElementById('studyArea').classList.remove('hidden');
+          showCurrentStudyCard();
+        }
+
+        function stopStudy(){
+          studyQueue = [];
+          studyIndex = 0;
+          document.getElementById('studyArea').classList.add('hidden');
+          document.getElementById('studyProgress').textContent = '';
+        }
+
+        function showCurrentStudyCard(){
+          const card = studyQueue[studyIndex];
+          if (!card) return finishStudy();
+          document.getElementById('studyQuestion').textContent = card.question;
+          const ans = document.getElementById('studyAnswer');
+          ans.textContent = card.answer;
+          ans.classList.add('hidden');
+          document.getElementById('studyRevealBtn').textContent = 'Show';
+          document.getElementById('studyProgress').textContent = `${studyIndex+1}/${studyQueue.length}`;
+        }
+
+        function toggleStudyReveal(){
+          const ans = document.getElementById('studyAnswer');
+          const btn = document.getElementById('studyRevealBtn');
+          if (ans.classList.contains('hidden')){ ans.classList.remove('hidden'); btn.textContent = 'Hide'; }
+          else { ans.classList.add('hidden'); btn.textContent = 'Show'; }
+        }
+
+        function confidenceToSM2(confidence){
+          if (confidence < 0.2) return 0;
+          if (confidence < 0.4) return 2;
+          if (confidence < 0.6) return 3;
+          if (confidence < 0.8) return 4;
+          return 5;
+        }
+
+        function updateConfidenceValue(v){
+          document.getElementById('confidenceValue').textContent = v + '%';
+        }
+
+        async function submitConfidence(){
+          const v = Number(document.getElementById('confidenceRange').value) / 100;
+          const q = confidenceToSM2(v);
+          await reviewCurrent(q);
+        }
+
+        async function reviewCurrent(quality){
+          const card = studyQueue[studyIndex];
+          if (!card) return;
+          try{
+            const res = await fetch(`${FLASHCARDS_API}/${card.id}/review`, {
+              method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({quality})
+            });
+            if (!res.ok) { const txt = await res.text(); return alert('Review failed: '+res.status+'\n'+txt); }
+            const updated = await res.json();
+            // advance to next
+            studyIndex++;
+            if (studyIndex >= studyQueue.length) return finishStudy();
+            showCurrentStudyCard();
+          }catch(e){ alert('Review error: '+e); }
+        }
+
+        function finishStudy(){
+          alert('Study session finished');
+          stopStudy();
+        }
+
+        // Start on Home
+        showHome();
       </script>
       
   </div>
