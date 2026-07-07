@@ -1,9 +1,13 @@
-# Purrfect Recall — development and release targets
+# Purrfect Recall — native app development
 #
-# Quick start:
-#   make dev       # foreground API + frontend (Ctrl+C stops both)
-#   make rebuild   # clean deps, migrate, restart background servers
-#   make help      # list all targets
+# Quick start (macOS):
+#   make build        # API deps + PurrfectRecallMac debug build
+#   make start        # API in background + launch Mac app
+#   make rebuild      # full reinstall, rebuild, restart
+#
+# iOS:
+#   make build-ios    # API deps + simulator build
+#   make start-ios    # API + install/launch on booted simulator
 
 ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 APPS_DIR := $(ROOT)/apps
@@ -23,6 +27,8 @@ DERIVED_DATA := $(APPS_DIR)/build/DerivedData
 MACOS_SCHEME := PurrfectRecallMac
 IOS_SCHEME := PurrfectRecallIOS
 IOS_SIM ?= iPhone 17
+MACOS_APP := $(DERIVED_DATA)/Build/Products/Debug/$(MACOS_SCHEME).app
+IOS_APP := $(DERIVED_DATA)/Build/Products/Debug-iphonesimulator/$(IOS_SCHEME).app
 
 MIGRATION_SCRIPTS := \
 	add_review_table \
@@ -31,11 +37,12 @@ MIGRATION_SCRIPTS := \
 	add_fsrs_memory_columns
 
 .PHONY: help \
-	deps sync migrate verify-api \
+	deps sync migrate verify-api build-api \
 	build rebuild clean clean-py clean-native \
-	dev start stop restart logs status \
+	start start-macos start-ios stop restart logs status \
+	dev-api dev-web \
 	xcodegen \
-	build-macos build-ios run-ios-sim \
+	build-macos build-ios run-macos run-ios-sim \
 	release-macos release-ios \
 	archive-macos archive-ios
 
@@ -47,7 +54,7 @@ help: ## Show available targets
 	@grep -E '^[a-zA-Z0-9_.-]+:.*##' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*## "}; {printf "  %-18s %s\n", $$1, $$2}' | sort
 	@echo ""
-	@echo "Variables: HOST=$(HOST) API_PORT=$(API_PORT) FRONTEND_PORT=$(FRONTEND_PORT) IOS_SIM=$(IOS_SIM)"
+	@echo "Variables: HOST=$(HOST) API_PORT=$(API_PORT) IOS_SIM=$(IOS_SIM)"
 
 # --- Python / API ---
 
@@ -68,11 +75,13 @@ migrate: ## Run SQLite migration scripts (skipped if study.db missing)
 verify-api: ## Verify FastAPI app imports
 	cd "$(ROOT)" && uv run python -c "from app.main import app; print('API OK')"
 
-build: deps migrate verify-api ## Sync deps, migrate DB, verify API
-	@echo "Build complete."
+build-api: deps migrate verify-api ## Sync deps, migrate DB, verify API
 
-rebuild: stop clean-py build start ## Full rebuild: reinstall deps, migrate, restart servers
-	@echo "Rebuild complete — servers running in background."
+build: build-api build-macos ## Build API + PurrfectRecallMac (debug)
+	@echo "Build complete → $(MACOS_APP)"
+
+rebuild: stop clean-py build start ## Reinstall deps, rebuild Mac app, restart API + app
+	@echo "Rebuild complete."
 
 clean-py: ## Reinstall Python virtualenv packages
 	cd "$(ROOT)" && uv sync --reinstall
@@ -83,35 +92,53 @@ clean-native: ## Remove Xcode DerivedData
 clean: clean-native ## Remove native build artifacts and dist output
 	rm -rf "$(DIST_DIR)"
 
-# --- Dev servers ---
+# --- Run (native) ---
 
-dev: ## Run API + frontend in foreground (like ./scripts/dev.sh)
+start-api: ## Start API in background
+	@chmod +x "$(ROOT)/scripts/start-api.sh"
+	@"$(ROOT)/scripts/start-api.sh"
+
+start: start-api run-macos ## Start API + launch PurrfectRecallMac
+
+start-macos: start ## Alias for start
+
+start-ios: start-api run-ios-sim ## Start API + build/install/launch iOS simulator app
+
+stop: ## Stop background API
+	@chmod +x "$(ROOT)/scripts/stop-api.sh"
+	@"$(ROOT)/scripts/stop-api.sh"
+
+restart: stop start ## Restart API and launch Mac app
+
+restart-ios: stop start-ios ## Restart API and launch iOS simulator app
+
+dev-api: ## Run API in foreground with --reload
+	cd "$(ROOT)" && uv run uvicorn app.main:app --reload --host "$(HOST)" --port "$(API_PORT)"
+
+dev-web: ## Legacy: API + web frontend in foreground (./scripts/dev.sh)
 	"$(ROOT)/scripts/dev.sh"
 
-start: build ## Start API + frontend in background
-	@chmod +x "$(ROOT)/scripts/start-dev-background.sh"
-	"$(ROOT)/scripts/start-dev-background.sh"
+logs: ## Tail API log
+	@tail -f "$(DEV_DIR)/backend.log"
 
-stop: ## Stop background API + frontend
-	@chmod +x "$(ROOT)/scripts/stop-dev.sh"
-	@"$(ROOT)/scripts/stop-dev.sh"
-
-restart: stop start ## Restart background servers
-
-logs: ## Tail background server logs
-	@tail -f "$(DEV_DIR)/backend.log" "$(DEV_DIR)/frontend.log"
-
-status: ## Show whether dev servers are running
+status: ## Show API and native app status
 	@port_pid() { lsof -ti ":$$1" 2>/dev/null | head -1; }; \
-	for svc in backend:$(API_PORT) frontend:$(FRONTEND_PORT); do \
-		name="$${svc%%:*}"; port="$${svc##*:}"; \
-		pid="$$(port_pid $$port)"; \
-		if [ -n "$$pid" ]; then \
-			echo "$$name: running on :$$port (pid $$pid)"; \
-		else \
-			echo "$$name: stopped"; \
-		fi; \
-	done
+	api_pid="$$(port_pid $(API_PORT))"; \
+	if [ -n "$$api_pid" ]; then \
+		echo "api:    running on :$(API_PORT) (pid $$api_pid)"; \
+	else \
+		echo "api:    stopped"; \
+	fi; \
+	if [ -d "$(MACOS_APP)" ]; then \
+		echo "macos:  built → $(MACOS_APP)"; \
+	else \
+		echo "macos:  not built (run make build-macos)"; \
+	fi; \
+	if pgrep -xq "$(MACOS_SCHEME)" 2>/dev/null; then \
+		echo "macos:  running"; \
+	else \
+		echo "macos:  not running"; \
+	fi
 
 # --- Xcode ---
 
@@ -127,7 +154,7 @@ build-macos: ## Debug build — PurrfectRecallMac
 		-derivedDataPath "$(DERIVED_DATA)" \
 		build
 
-build-ios: ## Debug build — PurrfectRecallIOS (simulator)
+build-ios: build-api ## Debug build — PurrfectRecallIOS (simulator)
 	cd "$(APPS_DIR)" && $(XCODEBUILD) \
 		-scheme "$(IOS_SCHEME)" \
 		-configuration Debug \
@@ -135,9 +162,16 @@ build-ios: ## Debug build — PurrfectRecallIOS (simulator)
 		-derivedDataPath "$(DERIVED_DATA)" \
 		build
 
-run-ios-sim: build-ios ## Build iOS app and launch on booted simulator
-	@xcrun simctl install booted "$(DERIVED_DATA)/Build/Products/Debug-iphonesimulator/$(IOS_SCHEME).app"
+run-macos: ## Launch PurrfectRecallMac (.app must exist)
+	@test -d "$(MACOS_APP)" || { echo "Missing $(MACOS_APP) — run make build-macos"; exit 1; }
+	@open -n "$(MACOS_APP)"
+	@echo "Launched $(MACOS_SCHEME)"
+
+run-ios-sim: build-ios ## Install + launch PurrfectRecallIOS on booted simulator
+	@test -d "$(IOS_APP)" || { echo "Missing $(IOS_APP)"; exit 1; }
+	@xcrun simctl install booted "$(IOS_APP)"
 	@xcrun simctl launch booted com.purrfectrecall.ios
+	@echo "Launched $(IOS_SCHEME) on simulator"
 
 release-macos: xcodegen ## Release build — PurrfectRecallMac (.app in dist/)
 	@mkdir -p "$(DIST_DIR)"

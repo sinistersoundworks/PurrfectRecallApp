@@ -41,9 +41,10 @@ Do **not** assume the richer layout shown in `app_scheme_images/SHOWCASES/` (Rea
 # Install
 uv sync
 
-# Backend + frontend together
-./scripts/dev.sh
-# or: make dev | make rebuild (background) | make build
+# Backend + native app workflow
+make build && make start   # API + PurrfectRecallMac
+# API only: make dev-api | make start-api
+# Legacy web UI: make dev-web (or ./scripts/dev.sh)
 ```
 
 Or run separately:

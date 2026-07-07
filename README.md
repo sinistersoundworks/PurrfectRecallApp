@@ -121,17 +121,18 @@ uv sync
 
 Starts the API on `http://127.0.0.1:8000` and the frontend on `http://127.0.0.1:5500`. Press Ctrl+C to stop both.
 
-### Makefile
+### Makefile (native apps)
 
 ```bash
-make help          # list targets
-make dev           # foreground (same as ./scripts/dev.sh)
-make build         # uv sync + DB migrations + API check
-make rebuild       # reinstall deps, migrate, restart background servers
-make stop          # stop background servers
-make build-macos   # debug Xcode build
-make release-macos # Release .app → dist/
-make release-ios   # Release iOS .app → dist/
+make build          # API deps + PurrfectRecallMac debug build
+make start          # API in background + launch Mac app
+make rebuild        # reinstall deps, rebuild Mac app, restart
+make build-ios      # API deps + iOS simulator build
+make start-ios      # API + install/launch on booted simulator
+make stop           # stop API
+make dev-api        # API foreground with --reload
+make dev-web        # legacy browser UI + API (port 5500)
+make release-macos  # Release .app → dist/
 ```
 
 Optional environment overrides:

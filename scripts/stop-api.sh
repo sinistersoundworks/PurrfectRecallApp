@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Stop background API + frontend started by scripts/start-dev-background.sh
+# Stop the background API started by scripts/start-api.sh
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEV_DIR="${ROOT}/.dev"
 API_PORT="${STUDYWEB_API_PORT:-8000}"
-FRONTEND_PORT="${STUDYWEB_FRONTEND_PORT:-5500}"
 
 kill_pid_file() {
   local file="$1"
@@ -40,9 +39,7 @@ kill_port() {
   fi
 }
 
-kill_pid_file "${DEV_DIR}/backend.pid" "backend"
-kill_pid_file "${DEV_DIR}/frontend.pid" "frontend"
+kill_pid_file "${DEV_DIR}/backend.pid" "API"
 kill_port "$API_PORT"
-kill_port "$FRONTEND_PORT"
 
-echo "Dev servers stopped."
+echo "API stopped."
