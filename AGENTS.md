@@ -29,6 +29,7 @@ Browser (frontend/index.html)
 - **Frontend:** static files under `frontend/` — **not** mounted by FastAPI; legacy dev UI. Primary UX: native SwiftUI apps in `apps/`
 - **Database:** SQLite file at repo root; URL in `app/database.py`
 - **Schema creation:** `Base.metadata.create_all()` on app startup (MVP — no Alembic)
+- **Bundled decks:** `bundled_decks/decks.json` seeded on API startup via `app/seed_bundled_decks.py`
 
 Do **not** assume the richer layout shown in `app_scheme_images/SHOWCASES/` (React, FSRS service layer, auth middleware) exists unless you are explicitly building it.
 

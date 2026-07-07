@@ -1,0 +1,68 @@
+{
+  "decks": [
+    {
+      "name": "Spanish Essentials",
+      "description": "Core Spanish vocabulary for everyday conversation.",
+      "cards": [
+        { "question": "hello", "answer": "hola" },
+        { "question": "goodbye", "answer": "adiós" },
+        { "question": "please", "answer": "por favor" },
+        { "question": "thank you", "answer": "gracias" },
+        { "question": "yes", "answer": "sí" },
+        { "question": "no", "answer": "no" },
+        { "question": "water", "answer": "agua" },
+        { "question": "food", "answer": "comida" },
+        { "question": "where is the bathroom?", "answer": "¿dónde está el baño?" },
+        { "question": "I don't understand", "answer": "no entiendo" }
+      ]
+    },
+    {
+      "name": "World Capitals",
+      "description": "Match countries to their capital cities.",
+      "cards": [
+        { "question": "France", "answer": "Paris" },
+        { "question": "Japan", "answer": "Tokyo" },
+        { "question": "Brazil", "answer": "Brasília" },
+        { "question": "Australia", "answer": "Canberra" },
+        { "question": "Canada", "answer": "Ottawa" },
+        { "question": "Egypt", "answer": "Cairo" },
+        { "question": "Germany", "answer": "Berlin" },
+        { "question": "India", "answer": "New Delhi" },
+        { "question": "Mexico", "answer": "Mexico City" },
+        { "question": "South Africa", "answer": "Pretoria" }
+      ]
+    },
+    {
+      "name": "CS Fundamentals",
+      "description": "Key terms every developer should know.",
+      "cards": [
+        { "question": "What is Big-O notation used for?", "answer": "Describing how runtime or space grows with input size." },
+        { "question": "What does HTTP stand for?", "answer": "HyperText Transfer Protocol" },
+        { "question": "What is a hash table?", "answer": "A key-value structure that maps keys to buckets using a hash function." },
+        { "question": "What is recursion?", "answer": "When a function calls itself until a base case is reached." },
+        { "question": "What is the difference between stack and queue?", "answer": "Stack is LIFO; queue is FIFO." },
+        { "question": "What is idempotency?", "answer": "Repeating an operation has the same effect as doing it once." },
+        { "question": "What is a deadlock?", "answer": "When threads wait on each other and none can proceed." },
+        { "question": "What does ACID stand for in databases?", "answer": "Atomicity, Consistency, Isolation, Durability" },
+        { "question": "What is a REST API?", "answer": "An API using HTTP verbs on resources, usually with JSON." },
+        { "question": "What is time complexity of binary search?", "answer": "O(log n)" }
+      ]
+    },
+    {
+      "name": "Periodic Table",
+      "description": "Element symbols and names (starter set).",
+      "cards": [
+        { "question": "H", "answer": "Hydrogen" },
+        { "question": "He", "answer": "Helium" },
+        { "question": "C", "answer": "Carbon" },
+        { "question": "N", "answer": "Nitrogen" },
+        { "question": "O", "answer": "Oxygen" },
+        { "question": "Na", "answer": "Sodium" },
+        { "question": "Fe", "answer": "Iron" },
+        { "question": "Cu", "answer": "Copper" },
+        { "question": "Ag", "answer": "Silver" },
+        { "question": "Au", "answer": "Gold" }
+      ]
+    }
+  ]
+}

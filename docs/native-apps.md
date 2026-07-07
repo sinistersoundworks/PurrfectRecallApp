@@ -17,7 +17,7 @@ apps/
     └── Views/              # Shared + Mac + iOS layouts
 ```
 
-**Backend dependency:** run `./scripts/dev.sh` (or `uv run uvicorn app.main:app --reload`) so the API is available at `http://127.0.0.1:8000`.
+**Backend dependency:** run `./scripts/dev.sh` (or `uv run uvicorn app.main:app --reload`) so the API is available at `http://127.0.0.1:8000`. Five starter decks are bundled in `bundled_decks/decks.json` and auto-seed on first API startup.
 
 Native apps also use:
 

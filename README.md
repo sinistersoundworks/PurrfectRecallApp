@@ -47,6 +47,19 @@ flowchart LR
 | Frontend | Static HTML, CSS, inline JavaScript |
 | Package manager | [uv](https://docs.astral.sh/uv/) |
 
+## Bundled starter decks
+
+Four default decks ship in `bundled_decks/decks.json` and are **inserted automatically** when the API starts (by deck name — existing decks are left untouched):
+
+| Deck | Cards | Notes |
+|------|------:|-------|
+| Spanish Essentials | 10 | Basic vocabulary |
+| World Capitals | 10 | Country → capital |
+| CS Fundamentals | 10 | Developer concepts |
+| Periodic Table | 10 | Symbol → element name |
+
+Fresh install: start the API once (`./scripts/dev.sh` or `uv run uvicorn app.main:app --reload`) and the decks appear in the native apps and web UI.
+
 ## Project structure
 
 ```
@@ -176,7 +189,7 @@ uv run python scripts/add_review_table.py
 | `DELETE` | `/flashcards/{id}` | Delete card |
 | `POST` | `/flashcards/{id}/review` | Apply SM-2 review `{ quality: 0–5 }` |
 
-Optional flashcard media fields ( layout): `example`, `ipa`, `image_path`, `audio_word`, `audio_meaning`, `audio_example`. See `docs/media-cards.md`.
+Optional flashcard media fields: `example`, `ipa`, `image_path`, `audio_word`, `audio_meaning`, `audio_example`. See `docs/media-cards.md`.
 
 ### Media (`/media`)
 
@@ -185,7 +198,7 @@ Optional flashcard media fields ( layout): `example`, `ipa`, `image_path`, `audi
 | `GET` | `/media/{path}` | Serve file from repo `media/` directory |
 | `POST` | `/media/upload` | Upload image/audio; returns `{ path, url }` |
 
-Sample deck: `uv run python scripts/add_flashcard_media_columns.py && uv run python scripts/`
+Run `uv run python scripts/add_flashcard_media_columns.py` on existing databases before using media fields.
 
 ### Stats (`/stats`)
 
