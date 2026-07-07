@@ -1,0 +1,38 @@
+name: StudyWeb
+options:
+  bundleIdPrefix: com.studyweb
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+  createIntermediateGroups: true
+packages:
+  StudyWebKit:
+    path: StudyWebKit
+targets:
+  StudyWebMac:
+    type: application
+    platform: macOS
+    sources:
+      - path: StudyWebMac
+    dependencies:
+      - package: StudyWebKit
+        product: StudyWebKit
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.studyweb.mac
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads: YES
+      INFOPLIST_KEY_CFBundleDisplayName: StudyWeb
+  StudyWebIOS:
+    type: application
+    platform: iOS
+    sources:
+      - path: StudyWebIOS
+    dependencies:
+      - package: StudyWebKit
+        product: StudyWebKit
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.studyweb.ios
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads: YES
+      INFOPLIST_KEY_CFBundleDisplayName: StudyWeb
+      INFOPLIST_KEY_UILaunchScreen_Generation: YES

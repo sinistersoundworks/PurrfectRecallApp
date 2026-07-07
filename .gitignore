@@ -26,6 +26,7 @@ dist/
 
 # Project files
 mzfile
+study.db
 
 # Editors and OS
 .DS_Store
@@ -41,3 +42,10 @@ mzfile
 
 # Node modules (frontend, if any)
 node_modules/
+
+# Xcode
+apps/build/
+apps/**/DerivedData/
+apps/**/*.xcuserstate
+apps/**/xcuserdata/
+*.xcworkspace/xcuserdata/

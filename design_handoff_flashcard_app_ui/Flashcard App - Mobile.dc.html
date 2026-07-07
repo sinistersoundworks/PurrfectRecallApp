@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/blackcat-audio-33653c7d-cfd5-4531-9707-81f3585e2800/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/blackcat-audio-33653c7d-cfd5-4531-9707-81f3585e2800/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/blackcat-audio-33653c7d-cfd5-4531-9707-81f3585e2800/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/blackcat-audio-33653c7d-cfd5-4531-9707-81f3585e2800/tokens/effects.css">
+  <link rel="stylesheet" href="_ds/blackcat-audio-33653c7d-cfd5-4531-9707-81f3585e2800/styles.css">
+  <script src="_ds/blackcat-audio-33653c7d-cfd5-4531-9707-81f3585e2800/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; background: #050505; display: flex; align-items: flex-start; justify-content: center; padding: 24px; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: var(--bg-control-hover); border-radius: 3px; }
+  </style>
+</helmet>
+
+<div style="width:390px;height:844px;background:var(--bg-base);display:flex;flex-direction:column;overflow:hidden;font-family:var(--font-ui);border-radius:40px;box-shadow:var(--shadow-xl);border:1px solid #000" data-screen-label="Mobile">
+
+  <!-- Status bar -->
+  <div style="height:46px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 8px">
+    <span style="font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--fg-1)">9:41</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <svg width="16" height="11" viewBox="0 0 18 12" fill="none"><rect x="0" y="4" width="3" height="8" rx="1" fill="var(--fg-1)"></rect><rect x="5" y="2" width="3" height="10" rx="1" fill="var(--fg-1)"></rect><rect x="10" y="0" width="3" height="12" rx="1" fill="var(--fg-1)"></rect><rect x="15" y="0" width="3" height="12" rx="1" fill="var(--fg-1)" opacity="0.3"></rect></svg>
+      <div style="width:22px;height:11px;border:1px solid var(--fg-2);border-radius:3px;padding:1px;display:flex;align-items:center"><div style="height:100%;width:75%;background:var(--color-active);border-radius:1px"></div></div>
+    </div>
+  </div>
+
+  <!-- Nav bar -->
+  <div style="height:48px;flex-shrink:0;background:var(--bg-raised);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 16px;gap:10px">
+    <div style="width:22px;height:22px;border-radius:5px;background:var(--accent-dim);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-weight:700">S</div>
+    <div style="font-size:14px;font-weight:600;color:var(--fg-1)">StudyWeb</div>
+    <div style="flex:1"></div>
+    <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-3)">14d streak</span>
+  </div>
+
+  <!-- DASHBOARD -->
+  <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;overflow-y:auto;padding:18px 16px 12px">
+      <div style="font-size:18px;font-weight:600;color:var(--fg-1)">Good evening</div>
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--fg-3);margin-top:3px;margin-bottom:16px">48 cards due across 5 decks</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px">
+        <x-import component-from-global-scope="BlackCatAudio_33653c.Card" hint-size="auto,auto" padding="sm">
+          <div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:6px">Streak</div>
+          <div style="font-family:var(--font-mono);font-size:20px;color:var(--accent)">14</div>
+        </x-import>
+        <x-import component-from-global-scope="BlackCatAudio_33653c.Card" hint-size="auto,auto" padding="sm">
+          <div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:6px">Due Today</div>
+          <div style="font-family:var(--font-mono);font-size:20px;color:var(--fg-1)">48</div>
+        </x-import>
+      </div>
+
+      <x-import component-from-global-scope="BlackCatAudio_33653c.Button" hint-size="100%,40px" variant="primary" size="lg" onClick="{{ () => setView('study') }}" style="margin-bottom:18px">Start Study</x-import>
+
+      <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-2);margin-bottom:10px">Decks</div>
+      <sc-for list="{{ decks }}" as="deck" hint-placeholder-count="5">
+        <div style="background:var(--bg-raised);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:8px" onClick="{{ () => openDeck(deck.id) }}">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div style="width:7px;height:7px;border-radius:2px;background:{{ deck.color }};flex-shrink:0"></div>
+            <div style="font-size:12px;font-weight:600;color:var(--fg-1);flex:1">{{ deck.name }}</div>
+            <sc-if value="{{ deck.hasDue }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:var(--font-mono);font-size:9px;background:var(--accent-dim);color:var(--accent);border-radius:var(--radius-full);padding:2px 7px">{{ deck.due }}</span>
+            </sc-if>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;height:4px;background:var(--bg-control);border-radius:var(--radius-full);overflow:hidden">
+              <div style="height:100%;background:{{ deck.color }};width:{{ deck.progressPct }}"></div>
+            </div>
+            <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-3)">{{ deck.mastered }}/{{ deck.total }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- STUDY -->
+  <sc-if value="{{ isStudy }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;padding:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <x-import component-from-global-scope="BlackCatAudio_33653c.Select" hint-size="1,26px" style="flex:1" value="{{ studyDeckId }}" onChange="{{ selectStudyDeck }}" options="{{ deckOptions }}"></x-import>
+        <sc-if value="{{ studying }}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="BlackCatAudio_33653c.Button" hint-size="60px,26px" size="sm" variant="secondary" onClick="{{ stopStudy }}">Stop</x-import>
+        </sc-if>
+        <sc-if value="{{ notStudying }}" hint-placeholder-val="{{ true }}">
+          <x-import component-from-global-scope="BlackCatAudio_33653c.Button" hint-size="90px,26px" size="sm" variant="primary" onClick="{{ startStudy }}">Start</x-import>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ studying }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;overflow-y:auto">
+          <div style="text-align:right;margin-bottom:10px"><span style="font-family:var(--font-mono);font-size:10px;color:var(--fg-3)">{{ studyProgressLabel }}</span></div>
+          <div style="background:var(--bg-raised);border:1px solid var(--border-default);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:32px 24px;text-align:center;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+            <div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3)">Question</div>
+            <div style="font-size:17px;color:var(--fg-1);line-height:1.4">{{ currentQuestion }}</div>
+            <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
+              <div style="width:100%;height:1px;background:var(--border-subtle);margin:2px 0"></div>
+              <div style="font-size:15px;color:var(--color-info)">{{ currentAnswer }}</div>
+            </sc-if>
+            <sc-if value="{{ notRevealed }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="BlackCatAudio_33653c.Button" hint-size="120px,32px" variant="secondary" onClick="{{ reveal }}">Show Answer</x-import>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ revealed }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px;background:var(--bg-raised);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3)">AI Predicted Recall</span>
+                <span style="font-family:var(--font-mono);font-size:12px;color:var(--color-info)">{{ predictedRecall }}%</span>
+              </div>
+              <x-import component-from-global-scope="BlackCatAudio_33653c.Meter" hint-size="100%,12px" orientation="horizontal" level="{{ predictedRecallLevel }}" length="310" width="8" segments="24"></x-import>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px">
+                <span style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3)">Your Confidence</span>
+                <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-1)">{{ confidence }}%</span>
+              </div>
+              <x-import component-from-global-scope="BlackCatAudio_33653c.Slider" hint-size="100%,32px" value="{{ confidence }}" min="0" max="100" length="300" onChange="{{ onConfidence }}"></x-import>
+
+              <x-import component-from-global-scope="BlackCatAudio_33653c.Button" hint-size="100%,40px" variant="primary" onClick="{{ submitConfidence }}" style="margin-top:14px">Submit &amp; Next</x-import>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ notStudying }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--fg-3);font-size:12px;padding:0 20px">Pick a deck and press Start to begin a session.</div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- DECKS -->
+  <sc-if value="{{ isDecks }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+      <sc-if value="{{ deckDetailOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;overflow-y:auto;padding:16px">
+          <div onClick="{{ closeDeckDetail }}" style="display:flex;align-items:center;gap:6px;color:var(--fg-3);font-size:11px;margin-bottom:12px">‹ All Decks</div>
+          <div style="font-size:16px;font-weight:600;color:var(--fg-1)">{{ activeDeck.name }}</div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--fg-3);margin:4px 0 4px">{{ activeDeck.mastered }}/{{ activeDeck.total }} mastered · {{ activeDeck.streak }}d streak</div>
+          <div style="font-size:11px;color:var(--fg-3);margin-bottom:14px">{{ activeDeck.description }}</div>
+
+          <x-import component-from-global-scope="BlackCatAudio_33653c.Card" hint-size="100%,auto" title="Add Flashcard" padding="sm" style="margin-bottom:14px">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <x-import component-from-global-scope="BlackCatAudio_33653c.Input" hint-size="100%,26px" placeholder="Question" value="{{ newQuestion }}" onChange="{{ onNewQuestion }}"></x-import>
+              <x-import component-from-global-scope="BlackCatAudio_33653c.Input" hint-size="100%,26px" placeholder="Answer" value="{{ newAnswer }}" onChange="{{ onNewAnswer }}"></x-import>
+              <x-import component-from-global-scope="BlackCatAudio_33653c.Button" hint-size="100%,28px" variant="primary" size="sm">Add</x-import>
+            </div>
+          </x-import>
+
+          <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:8px">Cards ({{ activeDeck.total }})</div>
+          <sc-for list="{{ activeDeckCards }}" as="card" hint-placeholder-count="4">
+            <div style="background:var(--bg-raised);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:12px;margin-bottom:8px">
+              <div style="font-size:12px;color:var(--fg-1);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ card.question }}</div>
+              <div style="font-size:10px;color:var(--fg-3);margin-top:3px">{{ card.answer }}</div>
+              <div style="margin-top:6px"><span style="font-family:var(--font-mono);font-size:9px;color:{{ card.statusColor }};background:{{ card.statusBg }};border-radius:var(--radius-full);padding:2px 8px">{{ card.statusLabel }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ deckListOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px 8px">
+          <x-import component-from-global-scope="BlackCatAudio_33653c.Input" hint-size="100%,26px" type="search" placeholder="Search decks…" value="{{ deckSearch }}" onChange="{{ onDeckSearch }}"></x-import>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:8px 16px 16px">
+          <sc-for list="{{ filteredDecks }}" as="deck" hint-placeholder-count="5">
+            <div style="background:var(--bg-raised);border:1px solid var(--border-default);border-radius:var(--radius-md);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px" onClick="{{ () => openDeck(deck.id) }}">
+              <div style="width:7px;height:7px;border-radius:2px;background:{{ deck.color }};flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12px;font-weight:600;color:var(--fg-1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ deck.name }}</div>
+                <div style="font-family:var(--font-mono);font-size:9px;color:var(--fg-3);margin-top:2px">{{ deck.total }} cards</div>
+              </div>
+              <span style="color:var(--fg-4);font-size:12px">›</span>
+            </div>
+          </sc-for>
+          <x-import component-from-global-scope="BlackCatAudio_33653c.Button" hint-size="100%,36px" variant="secondary">+ New Deck</x-import>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- STATS -->
+  <sc-if value="{{ isStats }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;overflow-y:auto;padding:18px 16px">
+      <div style="font-size:16px;font-weight:600;color:var(--fg-1);margin-bottom:14px">Stats</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <x-import component-from-global-scope="BlackCatAudio_33653c.Card" hint-size="auto,auto" padding="sm">
+          <div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:6px">Longest Streak</div>
+          <div style="font-family:var(--font-mono);font-size:18px;color:var(--fg-1)">21 days</div>
+        </x-import>
+        <x-import component-from-global-scope="BlackCatAudio_33653c.Card" hint-size="auto,auto" padding="sm">
+          <div style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:6px">Retention</div>
+          <div style="font-family:var(--font-mono);font-size:18px;color:var(--color-active)">87%</div>
+        </x-import>
+      </div>
+
+      <x-import component-from-global-scope="BlackCatAudio_33653c.Card" hint-size="100%,auto" title="Reviews — 7 Days" padding="md" style="margin-bottom:16px">
+        <div style="display:flex;align-items:flex-end;gap:8px;height:110px;padding-top:8px">
+          <sc-for list="{{ weekBars }}" as="bar" hint-placeholder-count="7">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end">
+              <span style="font-family:var(--font-mono);font-size:8px;color:var(--fg-3)">{{ bar.count }}</span>
+              <div style="width:100%;max-width:22px;height:{{ bar.heightPct }};background:var(--accent);border-radius:2px 2px 0 0"></div>
+              <span style="font-size:7px;letter-spacing:0.04em;text-transform:uppercase;color:var(--fg-3)">{{ bar.day }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </x-import>
+
+      <x-import component-from-global-scope="BlackCatAudio_33653c.Card" hint-size="100%,auto" title="Deck Retention" padding="md">
+        <sc-for list="{{ decks }}" as="deck" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border-subtle)">
+            <div style="width:6px;height:6px;border-radius:2px;background:{{ deck.color }};flex-shrink:0"></div>
+            <div style="width:90px;font-size:10px;color:var(--fg-1);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ deck.name }}</div>
+            <div style="flex:1;height:5px;background:var(--bg-control);border-radius:var(--radius-full);overflow:hidden">
+              <div style="height:100%;background:{{ deck.color }};width:{{ deck.retentionPct }}"></div>
+            </div>
+            <span style="font-family:var(--font-mono);font-size:9px;color:var(--fg-3);width:28px;text-align:right">{{ deck.retention }}%</span>
+          </div>
+        </sc-for>
+      </x-import>
+    </div>
+  </sc-if>
+
+  <!-- Tab bar -->
+  <div style="height:78px;flex-shrink:0;background:var(--bg-raised);border-top:1px solid var(--border-subtle);display:flex;align-items:flex-start;padding-top:10px">
+    <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
+      <div onClick="{{ tab.onClick }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer">
+        <div style="width:26px;height:26px;border-radius:7px;background:{{ tab.iconBg }};display:flex;align-items:center;justify-content:center;font-size:13px;color:{{ tab.iconColor }}">{{ tab.icon }}</div>
+        <span style="font-size:9px;letter-spacing:0.05em;text-transform:uppercase;color:{{ tab.labelColor }};font-weight:{{ tab.weight }}">{{ tab.label }}</span>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const DECKS = [
+  { id: 1, name: 'SPANISH VOCAB', description: 'Common words and phrases', color: '#38c4f0', total: 84, mastered: 52, due: 12, streak: 14, retention: 91 },
+  { id: 2, name: 'BIOLOGY 101', description: 'Cell structure and function basics', color: '#a070f0', total: 60, mastered: 40, due: 5, streak: 7, retention: 84 },
+  { id: 3, name: 'WORLD CAPITALS', description: 'Countries and their capital cities', color: '#34d058', total: 40, mastered: 40, due: 0, streak: 21, retention: 96 },
+  { id: 4, name: 'JS INTERVIEW PREP', description: 'Closures, async, prototypes', color: '#f08c0a', total: 96, mastered: 30, due: 23, streak: 3, retention: 68 },
+  { id: 5, name: 'MUSIC THEORY', description: 'Scales, intervals, chord voicings', color: '#f05080', total: 50, mastered: 22, due: 8, streak: 9, retention: 79 },
+];
+
+const CARDS_BY_DECK = {
+  1: [
+    { q: '¿Cómo se dice "flashcard" en español?', a: 'Tarjeta de estudio', status: 'due' },
+    { q: '¿Cómo se dice "knowledge" en español?', a: 'Conocimiento', status: 'due' },
+    { q: '¿Cómo se dice "review" en español?', a: 'Repasar', status: 'mastered' },
+    { q: '¿Cómo se dice "streak" en español?', a: 'Racha', status: 'learning' },
+  ],
+  2: [
+    { q: 'What is the powerhouse of the cell?', a: 'Mitochondria', status: 'mastered' },
+    { q: 'What organelle synthesizes proteins?', a: 'Ribosome', status: 'due' },
+  ],
+  3: [
+    { q: 'Capital of Australia?', a: 'Canberra', status: 'mastered' },
+    { q: 'Capital of Canada?', a: 'Ottawa', status: 'mastered' },
+  ],
+  4: [
+    { q: 'What does a closure capture?', a: 'Variables from its enclosing scope', status: 'due' },
+    { q: 'What does async/await sit on top of?', a: 'Promises', status: 'due' },
+  ],
+  5: [
+    { q: 'Notes in a major scale?', a: '7 notes', status: 'due' },
+    { q: 'Interval of a perfect fifth?', a: '7 semitones', status: 'mastered' },
+  ],
+};
+
+const STATUS_STYLE = {
+  due:      { label: 'DUE',      color: 'var(--accent)',       bg: 'var(--accent-dim)' },
+  learning: { label: 'LEARNING', color: 'var(--color-warn)',   bg: 'var(--color-warn-dim)' },
+  mastered: { label: 'MASTERED', color: 'var(--color-active)', bg: 'var(--color-active-dim)' },
+};
+
+const WEEK = [
+  { day: 'MON', count: 22 }, { day: 'TUE', count: 35 }, { day: 'WED', count: 18 },
+  { day: 'THU', count: 40 }, { day: 'FRI', count: 55 }, { day: 'SAT', count: 30 }, { day: 'SUN', count: 48 },
+];
+
+const TAB_DEFS = [
+  { id: 'dashboard', icon: '⌂', label: 'Home' },
+  { id: 'study', icon: '▶', label: 'Study' },
+  { id: 'decks', icon: '▤', label: 'Decks' },
+  { id: 'stats', icon: '▥', label: 'Stats' },
+];
+
+class Component extends DCLogic {
+  state = {
+    view: 'dashboard',
+    deckSearch: '',
+    activeDeckId: null,
+    studyDeckId: '1',
+    studying: false,
+    studyQueue: [],
+    studyIndex: 0,
+    revealed: false,
+    confidence: 50,
+    newQuestion: '',
+    newAnswer: '',
+  };
+
+  setView = (v) => this.setState({ view: v });
+  openDeck = (id) => this.setState({ activeDeckId: id });
+  closeDeckDetail = () => this.setState({ activeDeckId: null });
+  onDeckSearch = (v) => this.setState({ deckSearch: v });
+  onNewQuestion = (v) => this.setState({ newQuestion: v });
+  onNewAnswer = (v) => this.setState({ newAnswer: v });
+
+  selectStudyDeck = (v) => this.setState({ studyDeckId: v, studying: false });
+  startStudy = () => {
+    const cards = CARDS_BY_DECK[Number(this.state.studyDeckId)] || [];
+    this.setState({ studying: true, studyQueue: cards, studyIndex: 0, revealed: false, confidence: 50 });
+  };
+  stopStudy = () => this.setState({ studying: false, studyQueue: [], studyIndex: 0, revealed: false });
+  reveal = () => this.setState({ revealed: true });
+  onConfidence = (v) => this.setState({ confidence: Math.round(v) });
+  submitConfidence = () => {
+    const nextIndex = this.state.studyIndex + 1;
+    if (nextIndex >= this.state.studyQueue.length) {
+      this.setState({ studying: false, revealed: false, confidence: 50 });
+    } else {
+      this.setState({ studyIndex: nextIndex, revealed: false, confidence: 50 });
+    }
+  };
+
+  renderVals() {
+    const s = this.state;
+    const decks = DECKS.map(d => ({
+      ...d,
+      hasDue: d.due > 0,
+      progressPct: Math.round((d.mastered / d.total) * 100) + '%',
+      retentionPct: d.retention + '%',
+    }));
+    const filteredDecks = decks.filter(d => d.name.toLowerCase().includes(s.deckSearch.toLowerCase()));
+
+    const activeDeckRaw = DECKS.find(d => d.id === s.activeDeckId);
+    const activeDeck = activeDeckRaw ? { ...activeDeckRaw } : { name: '', description: '', mastered: 0, total: 0, streak: 0 };
+    const activeDeckCards = (CARDS_BY_DECK[s.activeDeckId] || []).map(c => ({
+      question: c.q, answer: c.a,
+      statusLabel: STATUS_STYLE[c.status].label,
+      statusColor: STATUS_STYLE[c.status].color,
+      statusBg: STATUS_STYLE[c.status].bg,
+    }));
+
+    const queue = s.studyQueue;
+    const current = queue[s.studyIndex];
+    const maxHeight = Math.max(...WEEK.map(w => w.count));
+    const weekBars = WEEK.map(w => ({ day: w.day, count: w.count, heightPct: Math.round((w.count / maxHeight) * 100) + '%' }));
+
+    const tabs = TAB_DEFS.map(t => {
+      const active = s.view === t.id;
+      return {
+        ...t,
+        onClick: () => this.setView(t.id),
+        iconBg: active ? 'var(--accent)' : 'var(--bg-elevated)',
+        iconColor: active ? 'var(--fg-on-accent)' : 'var(--fg-3)',
+        labelColor: active ? 'var(--accent)' : 'var(--fg-3)',
+        weight: active ? 600 : 400,
+      };
+    });
+
+    return {
+      isDashboard: s.view === 'dashboard',
+      isStudy: s.view === 'study',
+      isDecks: s.view === 'decks',
+      isStats: s.view === 'stats',
+      setView: this.setView,
+      tabs,
+      decks,
+      openDeck: this.openDeck,
+      closeDeckDetail: this.closeDeckDetail,
+      deckDetailOpen: !!s.activeDeckId,
+      deckListOpen: !s.activeDeckId,
+      deckSearch: s.deckSearch,
+      onDeckSearch: this.onDeckSearch,
+      filteredDecks,
+      activeDeck,
+      activeDeckCards,
+      newQuestion: s.newQuestion,
+      newAnswer: s.newAnswer,
+      onNewQuestion: this.onNewQuestion,
+      onNewAnswer: this.onNewAnswer,
+
+      studyDeckId: s.studyDeckId,
+      deckOptions: DECKS.map(d => ({ value: String(d.id), label: d.name })),
+      selectStudyDeck: this.selectStudyDeck,
+      studying: s.studying,
+      notStudying: !s.studying,
+      startStudy: this.startStudy,
+      stopStudy: this.stopStudy,
+      studyProgressLabel: s.studying && queue.length ? `${s.studyIndex + 1} / ${queue.length}` : '',
+      currentQuestion: current ? current.q : '',
+      currentAnswer: current ? current.a : '',
+      revealed: s.revealed,
+      notRevealed: !s.revealed,
+      reveal: this.reveal,
+      predictedRecall: current ? Math.round(55 + (s.confidence * 0.2)) : 0,
+      predictedRecallLevel: current ? Math.min(1, (55 + s.confidence * 0.2) / 100) : 0,
+      confidence: s.confidence,
+      onConfidence: this.onConfidence,
+      submitConfidence: this.submitConfidence,
+
+      weekBars,
+    };
+  }
+}
+</script>
+</body>
+</html>

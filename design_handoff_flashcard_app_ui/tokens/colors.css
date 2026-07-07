@@ -1,0 +1,51 @@
+/* Sinister Soundworks — Color Tokens
+ * Surfaces run near-black. Single accent: warm amber #F08C0A —
+ * reads like a VU meter at peak: analog, precise, purposeful.
+ */
+:root {
+  /* ── Backgrounds ─────────────────────────────────── */
+  --bg-base:             #090909; /* App background — almost true black */
+  --bg-raised:           #111111; /* Primary panels, sidebars */
+  --bg-elevated:         #181818; /* Dropdowns, floating panels */
+  --bg-overlay:          #1e1e1e; /* Modals, sheet overlays */
+  --bg-control:          #1c1c1c; /* Buttons, inputs, controls */
+  --bg-control-hover:    #222222;
+  --bg-control-active:   #282828;
+  --bg-control-pressed:  #0d0d0d; /* Sunken/inset pressed state */
+
+  /* ── Borders ─────────────────────────────────────── */
+  --border-subtle:   rgba(255, 255, 255, 0.05);
+  --border-default:  rgba(255, 255, 255, 0.09);
+  --border-strong:   rgba(255, 255, 255, 0.16);
+  --border-focus:    #f08c0a;
+
+  /* ── Foreground / Text ───────────────────────────── */
+  --fg-1:          #f2f2f2; /* Primary text */
+  --fg-2:          #a4a4a4; /* Secondary / labels */
+  --fg-3:          #5c5c5c; /* Placeholder / tertiary */
+  --fg-4:          #343434; /* Very subtle / hairline */
+  --fg-on-accent:  #0a0a0a; /* Text on amber backgrounds */
+
+  /* ── Accent ──────────────────────────────────────── */
+  --accent:          #f08c0a;
+  --accent-hover:    #f5a128;
+  --accent-pressed:  #cc7808;
+  --accent-dim:      rgba(240, 140, 10, 0.14);
+  --accent-glow:     rgba(240, 140, 10, 0.26);
+
+  /* ── Semantic ────────────────────────────────────── */
+  --color-active:      #34d058;   /* Playing / on / go */
+  --color-active-dim:  rgba(52, 208, 88, 0.14);
+  --color-danger:      #f05050;   /* Stop / error / clipping */
+  --color-danger-dim:  rgba(240, 80, 80, 0.14);
+  --color-warn:        #f0b030;   /* Solo / caution */
+  --color-warn-dim:    rgba(240, 176, 48, 0.14);
+  --color-info:        #38c4f0;   /* Informational highlights */
+  --color-info-dim:    rgba(56, 196, 240, 0.14);
+
+  /* ── Meter zones ─────────────────────────────────── */
+  --meter-safe:  #34d058; /* −∞ to −18 dBFS */
+  --meter-ok:    #a8d030; /* −18 to −6 dBFS */
+  --meter-warn:  #f0b030; /* −6 to −3 dBFS */
+  --meter-clip:  #f05050; /* −3 to 0 dBFS (clipping) */
+}

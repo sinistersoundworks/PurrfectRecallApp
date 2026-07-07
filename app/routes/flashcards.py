@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.flashcard import Flashcard
+from app.models.review import Review
 from app.models.subject import Subject
 from app.schemas.flashcard import (
     FlashcardCreate,
@@ -105,11 +106,12 @@ def delete_flashcard(flashcard_id: int, db: Session = Depends(get_db)):
 
 
 def _schedule_next_review(card: Flashcard, quality: int) -> None:
+    """Apply SM-2 scheduling. See docs/sm2-scheduling.md."""
     now = datetime.now(timezone.utc)
+
     if quality < 3:
         card.repetition = 0
         card.interval = 1
-        card.ease_factor = max(1.3, card.ease_factor - 0.8)
     else:
         card.repetition += 1
         if card.repetition == 1:
@@ -119,11 +121,23 @@ def _schedule_next_review(card: Flashcard, quality: int) -> None:
         else:
             card.interval = max(1, round(card.interval * card.ease_factor))
 
-        ease = card.ease_factor + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
-        card.ease_factor = max(1.3, ease)
+    # SM-2 ease factor formula (applied after every review)
+    ease = card.ease_factor + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
+    card.ease_factor = max(1.3, ease)
 
     card.last_reviewed = now
     card.due_date = now + timedelta(days=card.interval)
+
+
+def _log_review(db: Session, card: Flashcard, quality: int) -> None:
+    db.add(
+        Review(
+            flashcard_id=card.id,
+            subject_id=card.subject_id,
+            quality=quality,
+            reviewed_at=datetime.now(timezone.utc),
+        )
+    )
 
 
 @router.post("/{flashcard_id}/review", response_model=FlashcardResponse)
@@ -134,6 +148,7 @@ def review_flashcard(
 ):
     card = _get_card(db, flashcard_id)
     _schedule_next_review(card, review.quality)
+    _log_review(db, card, review.quality)
 
     db.commit()
     db.refresh(card)

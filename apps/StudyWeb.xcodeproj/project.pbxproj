@@ -1,0 +1,424 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6B617B270362338D7A151157 /* StudyWebKit in Frameworks */ = {isa = PBXBuildFile; productRef = DE84AA71D275E1C47713FBF6 /* StudyWebKit */; };
+		88A7D915962D74C8F1A4AE44 /* StudyWebKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8BAEDDA74CE4925CAA37F065 /* StudyWebKit */; };
+		B49C15DC076748860CC86F44 /* StudyWebMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28362F9FEC762F1C30EF1DB /* StudyWebMacApp.swift */; };
+		E58DEAD440CD06C90CAE26AC /* StudyWebIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507E05CA394CF6D964BB0095 /* StudyWebIOSApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		346D36493C2BE10F64488E2E /* StudyWebKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = StudyWebKit; path = StudyWebKit; sourceTree = SOURCE_ROOT; };
+		4A8F086ABC489CE56BA19F70 /* StudyWebMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyWebMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		507E05CA394CF6D964BB0095 /* StudyWebIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyWebIOSApp.swift; sourceTree = "<group>"; };
+		AA1199CC699C21D8D4E56427 /* StudyWebIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = StudyWebIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D28362F9FEC762F1C30EF1DB /* StudyWebMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyWebMacApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		17B3D01B372D677448D9F9CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88A7D915962D74C8F1A4AE44 /* StudyWebKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB8B7A8EDA31D74FC4F662D1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B617B270362338D7A151157 /* StudyWebKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1DE2FD2DE57331B6FFFEAF46 /* StudyWebIOS */ = {
+			isa = PBXGroup;
+			children = (
+				507E05CA394CF6D964BB0095 /* StudyWebIOSApp.swift */,
+			);
+			path = StudyWebIOS;
+			sourceTree = "<group>";
+		};
+		92AA7C906E52D22BD1C7F741 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				346D36493C2BE10F64488E2E /* StudyWebKit */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		C8811BB3416E1039135907F3 /* StudyWebMac */ = {
+			isa = PBXGroup;
+			children = (
+				D28362F9FEC762F1C30EF1DB /* StudyWebMacApp.swift */,
+			);
+			path = StudyWebMac;
+			sourceTree = "<group>";
+		};
+		E0F4E76A3C58291B7C495C08 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA1199CC699C21D8D4E56427 /* StudyWebIOS.app */,
+				4A8F086ABC489CE56BA19F70 /* StudyWebMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E2DFD76C919494781301F619 = {
+			isa = PBXGroup;
+			children = (
+				92AA7C906E52D22BD1C7F741 /* Packages */,
+				1DE2FD2DE57331B6FFFEAF46 /* StudyWebIOS */,
+				C8811BB3416E1039135907F3 /* StudyWebMac */,
+				E0F4E76A3C58291B7C495C08 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B18A233DAA5DC0E8ED1EA018 /* StudyWebIOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F40508C17335C8C67A57949 /* Build configuration list for PBXNativeTarget "StudyWebIOS" */;
+			buildPhases = (
+				418D4F6F5CC615685CB77BDD /* Sources */,
+				DB8B7A8EDA31D74FC4F662D1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StudyWebIOS;
+			packageProductDependencies = (
+				DE84AA71D275E1C47713FBF6 /* StudyWebKit */,
+			);
+			productName = StudyWebIOS;
+			productReference = AA1199CC699C21D8D4E56427 /* StudyWebIOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F908E3F2E8A0E970C222B0AF /* StudyWebMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6D3C218FBFC65161083C718 /* Build configuration list for PBXNativeTarget "StudyWebMac" */;
+			buildPhases = (
+				722D149FF1126C84DEAD1BE1 /* Sources */,
+				17B3D01B372D677448D9F9CD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StudyWebMac;
+			packageProductDependencies = (
+				8BAEDDA74CE4925CAA37F065 /* StudyWebKit */,
+			);
+			productName = StudyWebMac;
+			productReference = 4A8F086ABC489CE56BA19F70 /* StudyWebMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		65EBFFCF7BDAFA8E332A74E7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = C9403679F5518CC9D314D304 /* Build configuration list for PBXProject "StudyWeb" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = E2DFD76C919494781301F619;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				38DAE0297FFA139D234D4C07 /* XCLocalSwiftPackageReference "StudyWebKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E0F4E76A3C58291B7C495C08 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B18A233DAA5DC0E8ED1EA018 /* StudyWebIOS */,
+				F908E3F2E8A0E970C222B0AF /* StudyWebMac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		418D4F6F5CC615685CB77BDD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E58DEAD440CD06C90CAE26AC /* StudyWebIOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		722D149FF1126C84DEAD1BE1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B49C15DC076748860CC86F44 /* StudyWebMacApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2177E67297A5BA7A7B177B9C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		3C2DC70F8569E45A6242DB45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		7AE46A977CC88531AF97A8D8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = StudyWeb;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.studyweb.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9725C3C8CB69243C39C52D72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = StudyWeb;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.studyweb.mac;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A487996D67B496F8A3299E7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = StudyWeb;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.studyweb.mac;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E15B0A4B578BC77B3E27886C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = StudyWeb;
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.studyweb.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7F40508C17335C8C67A57949 /* Build configuration list for PBXNativeTarget "StudyWebIOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E15B0A4B578BC77B3E27886C /* Debug */,
+				7AE46A977CC88531AF97A8D8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A6D3C218FBFC65161083C718 /* Build configuration list for PBXNativeTarget "StudyWebMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A487996D67B496F8A3299E7B /* Debug */,
+				9725C3C8CB69243C39C52D72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C9403679F5518CC9D314D304 /* Build configuration list for PBXProject "StudyWeb" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3C2DC70F8569E45A6242DB45 /* Debug */,
+				2177E67297A5BA7A7B177B9C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		38DAE0297FFA139D234D4C07 /* XCLocalSwiftPackageReference "StudyWebKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = StudyWebKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8BAEDDA74CE4925CAA37F065 /* StudyWebKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StudyWebKit;
+		};
+		DE84AA71D275E1C47713FBF6 /* StudyWebKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StudyWebKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 65EBFFCF7BDAFA8E332A74E7 /* Project object */;
+}

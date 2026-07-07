@@ -1,0 +1,42 @@
+/* Sinister Soundworks — Typography Tokens
+ * UI font:   IBM Plex Sans — technical, clean, excellent at 11–13px
+ * Mono font: IBM Plex Mono — all numeric readouts, values, BPM, time
+ * Both from Google Fonts.
+ */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ── Families ────────────────────────────────────── */
+  --font-ui:   'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+  /* ── Sizes ───────────────────────────────────────── */
+  --text-2xs:   9px;  /* Micro labels, knob ticks */
+  --text-xs:   10px;  /* Small status labels */
+  --text-sm:   11px;  /* Compact UI labels */
+  --text-base: 12px;  /* Standard UI text */
+  --text-md:   13px;  /* Slightly larger body */
+  --text-lg:   15px;  /* Section titles */
+  --text-xl:   18px;  /* Panel headings */
+  --text-2xl:  22px;  /* Card titles */
+  --text-3xl:  28px;  /* Large display */
+  --text-4xl:  38px;  /* Hero / splash */
+
+  /* ── Weights ─────────────────────────────────────── */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+
+  /* ── Line heights ────────────────────────────────── */
+  --leading-none:   1;
+  --leading-tight:  1.2;
+  --leading-snug:   1.3;
+  --leading-normal: 1.45;
+
+  /* ── Letter spacing ──────────────────────────────── */
+  --tracking-tight:  -0.01em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-caps:    0.08em; /* ALL CAPS control labels */
+}

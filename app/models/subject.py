@@ -11,3 +11,4 @@ class Subject(Base):
     description = Column(String, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     flashcards = relationship("Flashcard", back_populates="subject", cascade="all, delete-orphan")
+    reviews = relationship("Review", back_populates="subject", cascade="all, delete-orphan")
