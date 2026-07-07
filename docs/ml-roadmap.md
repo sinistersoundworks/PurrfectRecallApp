@@ -85,7 +85,7 @@ priority = w1 × overdue_days
 
 ---
 
-### 4. Deck weakness insights — `planned`
+### 4. Deck weakness insights — `shipped`
 
 **Goal:** Dashboard tells users where they’re weak.
 
@@ -117,7 +117,7 @@ priority = w1 × overdue_days
 
 ---
 
-### 6. Forgetting curve / retention forecast — `planned`
+### 6. Forgetting curve / retention forecast — `shipped`
 
 **Goal:** Stats view shows expected retention over next 7 days.
 
@@ -202,7 +202,7 @@ priority = w1 × overdue_days
 | **1** | FSRS + predicted recall (#1) | 2–3 days | `shipped` |
 | **2** | Smart queue (#2) + daily load (#5) | 2 days | `shipped` (v1 heuristics) |
 | **3** | Confidence calibration (#3) | 1–2 days | `shipped` |
-| **4** | Deck insights (#4) + forecast (#6) | 2 days | `planned` |
+| **4** | Deck insights (#4) + forecast (#6) | 2 days | `shipped` |
 | **5** | LLM generation (#7) + enrichment (#8) | 3–4 days | `planned` |
 | **6** | Typed grading (#9) + speech (#10) + OCR (#11) | 1–2 weeks | `planned` |
 

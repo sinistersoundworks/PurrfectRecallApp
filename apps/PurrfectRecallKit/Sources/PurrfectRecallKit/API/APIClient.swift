@@ -175,6 +175,10 @@ public struct APIClient: Sendable {
         try await request("/stats")
     }
 
+    public func fetchForecast(days: Int = 7) async throws -> ForecastDTO {
+        try await request("/stats/forecast?days=\(days)")
+    }
+
     /// Lightweight health check for API reachability.
     public func ping() async -> Bool {
         struct Health: Decodable { let status: String }

@@ -11,7 +11,10 @@ from app.models.subject import Subject
 from app.schemas.stats import (
     CalibrationResponse,
     DeckCalibration,
+    DeckInsight,
     DeckStats,
+    ForecastPoint,
+    ForecastResponse,
     ReviewDayCount,
     StatsResponse,
 )
@@ -19,6 +22,13 @@ from app.services.calibration import (
     MIN_REVIEWS,
     build_calibration_snapshot,
     deck_hint_for,
+)
+from app.services.forecast import build_retention_forecast
+from app.services.insights import (
+    build_deck_insights,
+    global_study_tip,
+    pick_improving,
+    pick_weakest,
 )
 
 router = APIRouter(prefix="/stats", tags=["Stats"])
@@ -122,6 +132,24 @@ def get_stats(db: Session = Depends(get_db)):
     else:
         recommended_daily = daily_pace
 
+    deck_insights_raw = build_deck_insights(subjects, cards, reviews, now)
+    weakest = pick_weakest(deck_insights_raw)
+    improving = pick_improving(deck_insights_raw)
+    deck_insights = [
+        DeckInsight(
+            subject_id=item.subject_id,
+            name=item.name,
+            retention_pct=item.retention_pct,
+            lapse_rate_pct=item.lapse_rate_pct,
+            avg_difficulty=item.avg_difficulty,
+            review_count=item.review_count,
+            needs_attention=item.needs_attention,
+            trend=item.trend,
+            study_tip=item.study_tip,
+        )
+        for item in deck_insights_raw
+    ]
+
     return StatsResponse(
         streak_days=streak_days,
         due_today=due_today,
@@ -131,6 +159,12 @@ def get_stats(db: Session = Depends(get_db)):
         recommended_daily_reviews=recommended_daily,
         reviews_last_7_days=reviews_last_7_days,
         deck_stats=deck_stats,
+        deck_insights=deck_insights,
+        weakest_deck_id=weakest.subject_id if weakest else None,
+        weakest_deck_name=weakest.name if weakest else None,
+        improving_deck_id=improving.subject_id if improving else None,
+        improving_deck_name=improving.name if improving else None,
+        global_study_tip=global_study_tip(deck_insights_raw),
     )
 
 
@@ -172,4 +206,24 @@ def get_calibration(
         global_hint=global_bucket.hint,
         deck_hint=deck_hint_for(snapshot, subject_id),
         decks=decks,
+    )
+
+
+@router.get("/forecast", response_model=ForecastResponse)
+def get_forecast(
+    days: int = Query(7, ge=1, le=30, description="Forecast horizon in days"),
+    db: Session = Depends(get_db),
+):
+    cards = db.query(Flashcard).all()
+    points = build_retention_forecast(cards, days=days)
+    return ForecastResponse(
+        days=days,
+        points=[
+            ForecastPoint(
+                date=point.date,
+                expected_retention_pct=point.expected_retention_pct,
+                studied_card_count=point.studied_card_count,
+            )
+            for point in points
+        ],
     )

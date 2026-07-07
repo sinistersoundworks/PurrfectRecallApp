@@ -15,6 +15,18 @@ class DeckStats(BaseModel):
     retention_pct: float
 
 
+class DeckInsight(BaseModel):
+    subject_id: int
+    name: str
+    retention_pct: float
+    lapse_rate_pct: float | None = None
+    avg_difficulty: float | None = None
+    review_count: int
+    needs_attention: bool
+    trend: str
+    study_tip: str | None = None
+
+
 class StatsResponse(BaseModel):
     streak_days: int
     due_today: int
@@ -24,6 +36,23 @@ class StatsResponse(BaseModel):
     recommended_daily_reviews: int
     reviews_last_7_days: list[ReviewDayCount]
     deck_stats: list[DeckStats]
+    deck_insights: list[DeckInsight] = []
+    weakest_deck_id: int | None = None
+    weakest_deck_name: str | None = None
+    improving_deck_id: int | None = None
+    improving_deck_name: str | None = None
+    global_study_tip: str | None = None
+
+
+class ForecastPoint(BaseModel):
+    date: str
+    expected_retention_pct: float | None = None
+    studied_card_count: int
+
+
+class ForecastResponse(BaseModel):
+    days: int
+    points: list[ForecastPoint]
 
 
 class DeckCalibration(BaseModel):

@@ -82,6 +82,39 @@ public struct DeckStatsDTO: Codable, Identifiable, Sendable {
     }
 }
 
+public struct DeckInsightDTO: Codable, Identifiable, Sendable {
+    public var id: Int { subjectId }
+    public let subjectId: Int
+    public let name: String
+    public let retentionPct: Double
+    public let lapseRatePct: Double?
+    public let avgDifficulty: Double?
+    public let reviewCount: Int
+    public let needsAttention: Bool
+    public let trend: String
+    public let studyTip: String?
+
+    enum CodingKeys: String, CodingKey {
+        case name, trend
+        case subjectId = "subject_id"
+        case retentionPct = "retention_pct"
+        case lapseRatePct = "lapse_rate_pct"
+        case avgDifficulty = "avg_difficulty"
+        case reviewCount = "review_count"
+        case needsAttention = "needs_attention"
+        case studyTip = "study_tip"
+    }
+
+    public var trendLabel: String {
+        switch trend {
+        case "improving": "Improving"
+        case "declining": "Declining"
+        case "stable": "Stable"
+        default: "Not enough data"
+        }
+    }
+}
+
 public struct StatsDTO: Codable, Sendable {
     public let streakDays: Int
     public let dueToday: Int
@@ -91,6 +124,12 @@ public struct StatsDTO: Codable, Sendable {
     public let recommendedDailyReviews: Int
     public let reviewsLast7Days: [ReviewDayCountDTO]
     public let deckStats: [DeckStatsDTO]
+    public let deckInsights: [DeckInsightDTO]
+    public let weakestDeckId: Int?
+    public let weakestDeckName: String?
+    public let improvingDeckId: Int?
+    public let improvingDeckName: String?
+    public let globalStudyTip: String?
 
     enum CodingKeys: String, CodingKey {
         case streakDays = "streak_days"
@@ -101,7 +140,30 @@ public struct StatsDTO: Codable, Sendable {
         case recommendedDailyReviews = "recommended_daily_reviews"
         case reviewsLast7Days = "reviews_last_7_days"
         case deckStats = "deck_stats"
+        case deckInsights = "deck_insights"
+        case weakestDeckId = "weakest_deck_id"
+        case weakestDeckName = "weakest_deck_name"
+        case improvingDeckId = "improving_deck_id"
+        case improvingDeckName = "improving_deck_name"
+        case globalStudyTip = "global_study_tip"
     }
+}
+
+public struct ForecastPointDTO: Codable, Sendable {
+    public let date: String
+    public let expectedRetentionPct: Double?
+    public let studiedCardCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case date
+        case expectedRetentionPct = "expected_retention_pct"
+        case studiedCardCount = "studied_card_count"
+    }
+}
+
+public struct ForecastDTO: Codable, Sendable {
+    public let days: Int
+    public let points: [ForecastPointDTO]
 }
 
 public struct DeckCalibrationDTO: Codable, Identifiable, Sendable {

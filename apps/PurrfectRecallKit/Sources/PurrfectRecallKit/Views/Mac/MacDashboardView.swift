@@ -15,6 +15,7 @@ public struct MacDashboardView: View {
             DailyChallengesCard(engine: appState.gamification)
             header(viewModel: viewModel)
             statsRow(viewModel: viewModel)
+            insightsSection(viewModel: viewModel)
             decksSection(viewModel: viewModel)
         }
         .task(id: appState.dataRefreshToken) {
@@ -67,6 +68,45 @@ public struct MacDashboardView: View {
                 MacStatTile("Due Today", value: "\(stats.dueToday)")
                 MacStatTile("Cards Learned", value: "\(stats.cardsLearned)")
                 MacStatTile("Best Combo", value: "x\(appState.gamification.progress.bestCombo)", tint: BCColor.colorInfo)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func insightsSection(viewModel: DashboardViewModel) -> some View {
+        if let stats = viewModel.stats,
+           stats.weakestDeckName != nil || stats.improvingDeckName != nil {
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible(), spacing: 16),
+                    GridItem(.flexible(), spacing: 16),
+                ],
+                spacing: 16
+            ) {
+                if let name = stats.weakestDeckName,
+                   let deck = stats.deckInsights.first(where: { $0.name == name }) {
+                    MacInsightCard(
+                        title: "Weakest Deck",
+                        name: name,
+                        detail: String(format: "%.0f%% retention", deck.retentionPct),
+                        systemImage: "exclamationmark.triangle.fill",
+                        tint: BCColor.colorDanger
+                    ) {
+                        appState.openDeck(deck.subjectId)
+                    }
+                }
+                if let name = stats.improvingDeckName,
+                   let deck = stats.deckInsights.first(where: { $0.name == name }) {
+                    MacInsightCard(
+                        title: "Improving",
+                        name: name,
+                        detail: deck.trendLabel,
+                        systemImage: "arrow.up.right.circle.fill",
+                        tint: BCColor.colorActive
+                    ) {
+                        appState.openDeck(deck.subjectId)
+                    }
+                }
             }
         }
     }
@@ -176,6 +216,49 @@ private struct MacDeckCard: View {
                         .foregroundStyle(BCColor.fg2)
                 }
                 .tint(color)
+            }
+            .padding(18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                isHovered ? BCColor.bgElevated : BCColor.bgRaised,
+                in: RoundedRectangle(cornerRadius: MacLayout.cardCornerRadius, style: .continuous)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: MacLayout.cardCornerRadius, style: .continuous)
+                    .stroke(isHovered ? BCColor.borderStrong : BCColor.borderDefault, lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .onHover { isHovered = $0 }
+    }
+}
+
+private struct MacInsightCard: View {
+    let title: String
+    let name: String
+    let detail: String
+    let systemImage: String
+    let tint: Color
+    let onTap: () -> Void
+
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    Image(systemName: systemImage)
+                        .foregroundStyle(tint)
+                    Text(title)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(BCColor.fg3)
+                }
+                Text(name)
+                    .font(.headline)
+                    .foregroundStyle(BCColor.fg1)
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(BCColor.fg2)
             }
             .padding(18)
             .frame(maxWidth: .infinity, alignment: .leading)

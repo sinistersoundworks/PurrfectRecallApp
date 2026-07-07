@@ -223,8 +223,9 @@ Run `uv run python scripts/add_flashcard_media_columns.py` on existing databases
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/stats` | Aggregated stats + `recommended_daily_reviews` |
+| `GET` | `/stats` | Aggregated stats, `deck_insights`, weakest/improving deck |
 | `GET` | `/stats/calibration` | Confidence calibration hints; `?subject_id=` |
+| `GET` | `/stats/forecast` | FSRS retention forecast; `?days=7` |
 
 Run `uv run python scripts/add_review_table.py` on existing databases so review history is logged for stats.
 

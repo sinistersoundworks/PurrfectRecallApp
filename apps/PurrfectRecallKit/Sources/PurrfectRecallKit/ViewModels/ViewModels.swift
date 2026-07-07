@@ -320,6 +320,7 @@ public final class DecksViewModel {
 @MainActor
 public final class StatsViewModel {
     public var stats: StatsDTO?
+    public var forecast: ForecastDTO?
     public var isLoading = false
 
     public init() {}
@@ -328,13 +329,22 @@ public final class StatsViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            stats = try await api.fetchStats()
+            async let statsTask = api.fetchStats()
+            async let forecastTask = api.fetchForecast(days: 7)
+            stats = try await statsTask
+            forecast = try await forecastTask
         } catch {
             stats = nil
+            forecast = nil
         }
     }
 
     public var maxReviewCount: Int {
         max(stats?.reviewsLast7Days.map(\.count).max() ?? 1, 1)
+    }
+
+    public var maxForecastRetention: Double {
+        let values = forecast?.points.compactMap(\.expectedRetentionPct) ?? []
+        return max(values.max() ?? 100, 1)
     }
 }
