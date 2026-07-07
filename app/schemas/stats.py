@@ -21,5 +21,6 @@ class StatsResponse(BaseModel):
     cards_learned: int
     retention_pct: float
     avg_ease: float
+    recommended_daily_reviews: int
     reviews_last_7_days: list[ReviewDayCount]
     deck_stats: list[DeckStats]

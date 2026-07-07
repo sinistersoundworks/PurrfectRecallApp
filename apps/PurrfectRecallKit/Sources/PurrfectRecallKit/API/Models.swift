@@ -29,6 +29,10 @@ public struct FlashcardDTO: Codable, Identifiable, Hashable, Sendable {
     public let easeFactor: Double
     public let repetition: Int
     public let dueDate: Date
+    public let memoryState: Int?
+    public let memoryStability: Double?
+    public let memoryDifficulty: Double?
+    public let predictedRecallPct: Double?
 
     enum CodingKeys: String, CodingKey {
         case id, question, answer, example, ipa, interval, repetition
@@ -41,6 +45,10 @@ public struct FlashcardDTO: Codable, Identifiable, Hashable, Sendable {
         case lastReviewed = "last_reviewed"
         case easeFactor = "ease_factor"
         case dueDate = "due_date"
+        case memoryState = "memory_state"
+        case memoryStability = "memory_stability"
+        case memoryDifficulty = "memory_difficulty"
+        case predictedRecallPct = "predicted_recall_pct"
     }
 
     public var hasMedia: Bool {
@@ -80,6 +88,7 @@ public struct StatsDTO: Codable, Sendable {
     public let cardsLearned: Int
     public let retentionPct: Double
     public let avgEase: Double
+    public let recommendedDailyReviews: Int
     public let reviewsLast7Days: [ReviewDayCountDTO]
     public let deckStats: [DeckStatsDTO]
 
@@ -89,6 +98,7 @@ public struct StatsDTO: Codable, Sendable {
         case cardsLearned = "cards_learned"
         case retentionPct = "retention_pct"
         case avgEase = "avg_ease"
+        case recommendedDailyReviews = "recommended_daily_reviews"
         case reviewsLast7Days = "reviews_last_7_days"
         case deckStats = "deck_stats"
     }
@@ -192,8 +202,32 @@ public struct FlashcardUpdateRequest: Encodable, Sendable {
 
 public struct ReviewRequest: Encodable, Sendable {
     public let quality: Int
+    public let confidence: Int?
+    public let responseMs: Int?
+    public let sessionId: String?
 
-    public init(quality: Int) {
+    enum CodingKeys: String, CodingKey {
+        case quality, confidence
+        case responseMs = "response_ms"
+        case sessionId = "session_id"
+    }
+
+    public init(quality: Int, confidence: Int? = nil, responseMs: Int? = nil, sessionId: String? = nil) {
         self.quality = quality
+        self.confidence = confidence
+        self.responseMs = responseMs
+        self.sessionId = sessionId
+    }
+}
+
+public struct FlashcardReviewResultDTO: Codable, Sendable {
+    public let card: FlashcardDTO
+    public let predictedRecallBeforePct: Double?
+    public let predictedRecallAfterPct: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case card
+        case predictedRecallBeforePct = "predicted_recall_before_pct"
+        case predictedRecallAfterPct = "predicted_recall_after_pct"
     }
 }

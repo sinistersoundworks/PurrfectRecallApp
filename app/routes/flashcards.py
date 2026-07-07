@@ -11,8 +11,11 @@ from app.schemas.flashcard import (
     FlashcardCreate,
     FlashcardResponse,
     FlashcardReview,
+    FlashcardReviewResult,
     FlashcardUpdate,
 )
+from app.services.fsrs_scheduler import predicted_recall_pct, schedule_review
+from app.services.session_queue import build_study_queue
 
 router = APIRouter(prefix="/flashcards", tags=["Flashcards"])
 
@@ -29,6 +32,13 @@ def _validate_subject(db: Session, subject_id: int) -> Subject:
     if not subject:
         raise HTTPException(status_code=404, detail="Subject not found")
     return subject
+
+
+def _to_response(card: Flashcard) -> FlashcardResponse:
+    data = FlashcardResponse.model_validate(card)
+    return data.model_copy(
+        update={"predicted_recall_pct": predicted_recall_pct(card)}
+    )
 
 
 @router.post("", response_model=FlashcardResponse)
@@ -51,7 +61,7 @@ def create_flashcard(card: FlashcardCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_card)
 
-    return db_card
+    return _to_response(db_card)
 
 
 @router.get("", response_model=list[FlashcardResponse])
@@ -62,7 +72,8 @@ def get_flashcards(
     query = db.query(Flashcard)
     if subject_id is not None:
         query = query.filter(Flashcard.subject_id == subject_id)
-    return query.order_by(Flashcard.due_date).all()
+    cards = query.order_by(Flashcard.due_date).all()
+    return [_to_response(card) for card in cards]
 
 
 @router.get("/due", response_model=list[FlashcardResponse])
@@ -74,12 +85,30 @@ def get_due_flashcards(db: Session = Depends(get_db)):
         .order_by(Flashcard.due_date)
         .all()
     )
-    return cards
+    return [_to_response(card) for card in cards]
+
+
+@router.get("/study-queue", response_model=list[FlashcardResponse])
+def get_study_queue(
+    subject_id: int | None = Query(None, description="Limit queue to one deck"),
+    limit: int = Query(50, ge=1, le=200),
+    db: Session = Depends(get_db),
+):
+    """Prioritized study queue (FSRS retrievability + overdue weighting)."""
+    now = datetime.now(timezone.utc)
+    query = db.query(Flashcard)
+    if subject_id is not None:
+        query = query.filter(Flashcard.subject_id == subject_id)
+    cards = query.filter(Flashcard.due_date <= now).all()
+    if not cards and subject_id is not None:
+        cards = query.all()
+    ordered = build_study_queue(cards, limit=limit)
+    return [_to_response(card) for card in ordered]
 
 
 @router.get("/{flashcard_id}", response_model=FlashcardResponse)
 def get_flashcard(flashcard_id: int, db: Session = Depends(get_db)):
-    return _get_card(db, flashcard_id)
+    return _to_response(_get_card(db, flashcard_id))
 
 
 @router.put("/{flashcard_id}", response_model=FlashcardResponse)
@@ -112,7 +141,7 @@ def update_flashcard(
 
     db.commit()
     db.refresh(db_card)
-    return db_card
+    return _to_response(db_card)
 
 
 @router.delete("/{flashcard_id}")
@@ -123,51 +152,41 @@ def delete_flashcard(flashcard_id: int, db: Session = Depends(get_db)):
     return {"message": "deleted"}
 
 
-def _schedule_next_review(card: Flashcard, quality: int) -> None:
-    """Apply SM-2 scheduling. See docs/sm2-scheduling.md."""
-    now = datetime.now(timezone.utc)
-
-    if quality < 3:
-        card.repetition = 0
-        card.interval = 1
-    else:
-        card.repetition += 1
-        if card.repetition == 1:
-            card.interval = 1
-        elif card.repetition == 2:
-            card.interval = 6
-        else:
-            card.interval = max(1, round(card.interval * card.ease_factor))
-
-    # SM-2 ease factor formula (applied after every review)
-    ease = card.ease_factor + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
-    card.ease_factor = max(1.3, ease)
-
-    card.last_reviewed = now
-    card.due_date = now + timedelta(days=card.interval)
-
-
-def _log_review(db: Session, card: Flashcard, quality: int) -> None:
+def _log_review(
+    db: Session,
+    card: Flashcard,
+    review: FlashcardReview,
+    predicted_before: float | None,
+) -> None:
     db.add(
         Review(
             flashcard_id=card.id,
             subject_id=card.subject_id,
-            quality=quality,
+            quality=review.quality,
+            confidence=review.confidence,
+            response_ms=review.response_ms,
+            session_id=review.session_id,
+            predicted_recall_pct=predicted_before,
             reviewed_at=datetime.now(timezone.utc),
         )
     )
 
 
-@router.post("/{flashcard_id}/review", response_model=FlashcardResponse)
+@router.post("/{flashcard_id}/review", response_model=FlashcardReviewResult)
 def review_flashcard(
     flashcard_id: int,
     review: FlashcardReview,
     db: Session = Depends(get_db),
 ):
     card = _get_card(db, flashcard_id)
-    _schedule_next_review(card, review.quality)
-    _log_review(db, card, review.quality)
+    card, predicted_before = schedule_review(card, review.quality)
+    _log_review(db, card, review, predicted_before)
 
     db.commit()
     db.refresh(card)
-    return card
+    response = _to_response(card)
+    return FlashcardReviewResult(
+        card=response,
+        predicted_recall_before_pct=predicted_before,
+        predicted_recall_after_pct=response.predicted_recall_pct,
+    )

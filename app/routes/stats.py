@@ -104,12 +104,20 @@ def get_stats(db: Session = Depends(get_db)):
             )
         )
 
+    seven_day_total = sum(day_counts.values())
+    daily_pace = max(5, int(round(seven_day_total / 7))) if seven_day_total else 15
+    if due_today > 0:
+        recommended_daily = min(due_today, max(daily_pace, 15))
+    else:
+        recommended_daily = daily_pace
+
     return StatsResponse(
         streak_days=streak_days,
         due_today=due_today,
         cards_learned=cards_learned,
         retention_pct=retention_pct,
         avg_ease=avg_ease,
+        recommended_daily_reviews=recommended_daily,
         reviews_last_7_days=reviews_last_7_days,
         deck_stats=deck_stats,
     )

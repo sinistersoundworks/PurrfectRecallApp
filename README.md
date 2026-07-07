@@ -49,7 +49,7 @@ flowchart LR
 
 ## Bundled starter decks
 
-Four default decks ship in `bundled_decks/decks.json` and are **inserted automatically** when the API starts (by deck name — existing decks are left untouched):
+Eight default decks ship in `bundled_decks/decks.json` and are **inserted automatically** when the API starts (by deck name — existing decks are left untouched):
 
 | Deck | Cards | Notes |
 |------|------:|-------|
@@ -57,6 +57,10 @@ Four default decks ship in `bundled_decks/decks.json` and are **inserted automat
 | World Capitals | 10 | Country → capital |
 | CS Fundamentals | 10 | Developer concepts |
 | Periodic Table | 10 | Symbol → element name |
+| Sci-Fi Classics | 10 | Landmark sci-fi films |
+| Sci-Fi Worlds | 10 | Ships, characters, tech |
+| Horror Legends | 10 | Classic horror trivia |
+| Horror Creatures | 10 | Monster → film |
 
 Fresh install: start the API once (`./scripts/dev.sh` or `uv run uvicorn app.main:app --reload`) and the decks appear in the native apps and web UI.
 
@@ -116,6 +120,19 @@ uv sync
 ```
 
 Starts the API on `http://127.0.0.1:8000` and the frontend on `http://127.0.0.1:5500`. Press Ctrl+C to stop both.
+
+### Makefile
+
+```bash
+make help          # list targets
+make dev           # foreground (same as ./scripts/dev.sh)
+make build         # uv sync + DB migrations + API check
+make rebuild       # reinstall deps, migrate, restart background servers
+make stop          # stop background servers
+make build-macos   # debug Xcode build
+make release-macos # Release .app → dist/
+make release-ios   # Release iOS .app → dist/
+```
 
 Optional environment overrides:
 
@@ -187,7 +204,8 @@ uv run python scripts/add_review_table.py
 | `POST` | `/flashcards` | Create card (see media fields below) |
 | `PUT` | `/flashcards/{id}` | Partial update |
 | `DELETE` | `/flashcards/{id}` | Delete card |
-| `POST` | `/flashcards/{id}/review` | Apply SM-2 review `{ quality: 0–5 }` |
+| `GET` | `/flashcards/study-queue` | Prioritized queue; `?subject_id=&limit=50` |
+| `POST` | `/flashcards/{id}/review` | FSRS review → `{ card, predicted_recall_before_pct, … }` |
 
 Optional flashcard media fields: `example`, `ipa`, `image_path`, `audio_word`, `audio_meaning`, `audio_example`. See `docs/media-cards.md`.
 
@@ -204,7 +222,7 @@ Run `uv run python scripts/add_flashcard_media_columns.py` on existing databases
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/stats` | Aggregated streak, due counts, retention, 7-day review chart, per-deck stats |
+| `GET` | `/stats` | Aggregated stats + `recommended_daily_reviews` |
 
 Run `uv run python scripts/add_review_table.py` on existing databases so review history is logged for stats.
 
@@ -243,7 +261,7 @@ erDiagram
 
 ### SM-2 scheduling
 
-Purrfect Recall implements the **SM-2** spaced-repetition algorithm. Each card tracks `interval`, `repetition`, `ease_factor`, and `due_date`. Reviews are submitted via `POST /flashcards/{id}/review` with a quality score 0–5.
+Purrfect Recall uses **FSRS** for scheduling (see `docs/fsrs-scheduling.md`). Each card tracks FSRS memory fields plus legacy `interval`, `repetition`, `ease_factor`, and `due_date`. Reviews return **predicted recall %** from the model.
 
 The Study UI uses a **confidence slider** (0–100%) mapped to SM-2 quality instead of Anki’s four buttons — same scheduler, smoother UX. This mapping is designed so a future **FSRS** backend can replace SM-2 without changing the UI.
 

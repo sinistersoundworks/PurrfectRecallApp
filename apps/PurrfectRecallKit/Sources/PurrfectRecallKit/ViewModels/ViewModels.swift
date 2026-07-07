@@ -44,6 +44,8 @@ public final class StudyViewModel {
     public var isRevealed = false
     public var confidence: Double = 50
     public var isSubmitting = false
+    public var sessionStartedAt: Date?
+    public var sessionId = UUID().uuidString
 
     public init() {}
 
@@ -63,7 +65,10 @@ public final class StudyViewModel {
     }
 
     public var predictedRecall: Int {
-        SM2.predictedRecallPercent(confidence: confidence)
+        if let card = currentCard, let pct = card.predictedRecallPct {
+            return Int(pct.rounded())
+        }
+        return SM2.predictedRecallPercent(confidence: confidence)
     }
 
     public func loadSubjects(using api: APIClient) async {
@@ -98,14 +103,15 @@ public final class StudyViewModel {
 
     public func start(using api: APIClient, gamification: GamificationEngine? = nil) async {
         gamification?.resetSession()
+        sessionId = UUID().uuidString
+        sessionStartedAt = Date()
         guard let deckId = selectedDeckId else { return }
         do {
-            let cards = try await api.fetchFlashcards(subjectId: deckId)
-            let now = Date()
-            var due = cards.filter { $0.dueDate <= now }
-            if due.isEmpty { due = cards }
-            due.shuffle()
-            queue = due
+            var cards = try await api.fetchStudyQueue(subjectId: deckId, limit: 50)
+            if cards.isEmpty {
+                cards = try await api.fetchFlashcards(subjectId: deckId)
+            }
+            queue = cards
             currentIndex = 0
             isStudying = !queue.isEmpty
             isRevealed = false
@@ -126,6 +132,7 @@ public final class StudyViewModel {
 
     public func reveal() {
         isRevealed = true
+        sessionStartedAt = Date()
     }
 
     public func submit(using api: APIClient, gamification: GamificationEngine? = nil) async {
@@ -133,7 +140,21 @@ public final class StudyViewModel {
         isSubmitting = true
         defer { isSubmitting = false }
         let quality = SM2.quality(fromConfidencePercent: confidence)
-        _ = try? await api.reviewFlashcard(id: card.id, quality: quality)
+        let responseMs: Int? = {
+            guard let sessionStartedAt else { return nil }
+            return Int(Date().timeIntervalSince(sessionStartedAt) * 1000)
+        }()
+        let result = try? await api.reviewFlashcard(
+            id: card.id,
+            quality: quality,
+            confidence: Int(confidence.rounded()),
+            responseMs: responseMs,
+            sessionId: sessionId
+        )
+        if let index = queue.firstIndex(where: { $0.id == card.id }),
+           let updated = result?.card {
+            queue[index] = updated
+        }
         if let gamification {
             let stats = try? await api.fetchStats()
             _ = gamification.recordReview(
@@ -142,6 +163,7 @@ public final class StudyViewModel {
                 stats: stats
             )
         }
+        sessionStartedAt = Date()
         currentIndex += 1
         isRevealed = false
         confidence = 50

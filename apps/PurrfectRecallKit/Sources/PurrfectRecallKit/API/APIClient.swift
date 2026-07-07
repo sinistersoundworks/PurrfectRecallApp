@@ -125,6 +125,14 @@ public struct APIClient: Sendable {
         try await emptyRequest("/subjects/\(id)", method: "DELETE")
     }
 
+    public func fetchStudyQueue(subjectId: Int? = nil, limit: Int = 50) async throws -> [FlashcardDTO] {
+        var path = "/flashcards/study-queue?limit=\(limit)"
+        if let subjectId {
+            path += "&subject_id=\(subjectId)"
+        }
+        return try await request(path)
+    }
+
     public func fetchFlashcards(subjectId: Int? = nil) async throws -> [FlashcardDTO] {
         if let subjectId {
             return try await request("/flashcards?subject_id=\(subjectId)")
@@ -144,8 +152,23 @@ public struct APIClient: Sendable {
         try await emptyRequest("/flashcards/\(id)", method: "DELETE")
     }
 
-    public func reviewFlashcard(id: Int, quality: Int) async throws -> FlashcardDTO {
-        try await request("/flashcards/\(id)/review", method: "POST", body: ReviewRequest(quality: quality))
+    public func reviewFlashcard(
+        id: Int,
+        quality: Int,
+        confidence: Int? = nil,
+        responseMs: Int? = nil,
+        sessionId: String? = nil
+    ) async throws -> FlashcardReviewResultDTO {
+        try await request(
+            "/flashcards/\(id)/review",
+            method: "POST",
+            body: ReviewRequest(
+                quality: quality,
+                confidence: confidence,
+                responseMs: responseMs,
+                sessionId: sessionId
+            )
+        )
     }
 
     public func fetchStats() async throws -> StatsDTO {

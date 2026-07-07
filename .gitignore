@@ -39,6 +39,7 @@ study.db
 
 # Logs
 *.log
+.dev/
 
 # Node modules (frontend, if any)
 node_modules/

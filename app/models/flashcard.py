@@ -23,6 +23,10 @@ class Flashcard(Base):
     ease_factor = Column(Float, default=2.5)
     repetition = Column(Integer, default=0)
     due_date = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    memory_state = Column(Integer, default=0)
+    memory_step = Column(Integer, nullable=True)
+    memory_stability = Column(Float, nullable=True)
+    memory_difficulty = Column(Float, nullable=True)
 
     subject = relationship("Subject", back_populates="flashcards")
     reviews = relationship("Review", back_populates="flashcard", cascade="all, delete-orphan")

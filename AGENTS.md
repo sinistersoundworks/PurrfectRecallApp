@@ -43,6 +43,7 @@ uv sync
 
 # Backend + frontend together
 ./scripts/dev.sh
+# or: make dev | make rebuild (background) | make build
 ```
 
 Or run separately:

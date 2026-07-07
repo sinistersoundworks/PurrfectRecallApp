@@ -47,6 +47,7 @@
           <button onclick="toggleStudyReveal()" id="studyRevealBtn">Show</button>
         </div>
         <div class="confidence-row" id="studyConfidenceRow">
+          <div id="predictedRecallRow" style="margin-bottom:8px;color:#38C4F0;font-size:14px"></div>
           <label for="confidenceRange">Confidence</label>
           <input id="confidenceRange" type="range" min="0" max="100" value="50" oninput="updateConfidenceValue(this.value)">
           <div class="confidence-value" id="confidenceValue">50%</div>
@@ -396,15 +397,14 @@
         async function startStudy(){
           const subjectId = document.getElementById('studySubject').value;
           if (!subjectId) return alert('Select a deck');
-          const res = await fetch(`${FLASHCARDS_API}?subject_id=${subjectId}`);
+          let res = await fetch(`${FLASHCARDS_API}/study-queue?subject_id=${subjectId}&limit=50`);
           if (!res.ok) return alert('Failed to load cards: ' + res.status);
-          const cards = await res.json();
-
-          // prefer due cards
-          const now = new Date();
-          studyQueue = cards.filter(c => !c.due_date || new Date(c.due_date) <= now);
-          if (studyQueue.length === 0) studyQueue = cards.slice();
-          shuffle(studyQueue);
+          studyQueue = await res.json();
+          if (studyQueue.length === 0) {
+            res = await fetch(`${FLASHCARDS_API}?subject_id=${subjectId}`);
+            if (!res.ok) return alert('Failed to load cards: ' + res.status);
+            studyQueue = await res.json();
+          }
           studyIndex = 0;
           if (studyQueue.length === 0) return alert('No cards in this deck');
           document.getElementById('studyArea').classList.remove('hidden');
@@ -427,6 +427,13 @@
           ans.classList.add('hidden');
           document.getElementById('studyRevealBtn').textContent = 'Show';
           document.getElementById('studyProgress').textContent = `${studyIndex+1}/${studyQueue.length}`;
+          const pred = card.predicted_recall_pct;
+          const predEl = document.getElementById('predictedRecallRow');
+          if (pred != null) {
+            predEl.textContent = `Predicted recall: ${Math.round(pred)}%`;
+          } else {
+            predEl.textContent = 'Predicted recall: new card';
+          }
         }
 
         function toggleStudyReveal(){
@@ -454,15 +461,23 @@
           await reviewCurrent(q);
         }
 
+        function predictedRecallFallback(confidencePct) {
+          return Math.round(55 + confidencePct * 0.2);
+        }
+
         async function reviewCurrent(quality){
           const card = studyQueue[studyIndex];
           if (!card) return;
           try{
+            const confidence = Number(document.getElementById('confidenceRange').value);
             const res = await fetch(`${FLASHCARDS_API}/${card.id}/review`, {
-              method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({quality})
+              method: 'POST',
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify({ quality, confidence })
             });
             if (!res.ok) { const txt = await res.text(); return alert('Review failed: '+res.status+'\n'+txt); }
-            const updated = await res.json();
+            const result = await res.json();
+            studyQueue[studyIndex] = result.card;
             // advance to next
             studyIndex++;
             if (studyIndex >= studyQueue.length) return finishStudy();

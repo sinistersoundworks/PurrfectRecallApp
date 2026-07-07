@@ -63,6 +63,70 @@
         { "question": "Ag", "answer": "Silver" },
         { "question": "Au", "answer": "Gold" }
       ]
+    },
+    {
+      "name": "Sci-Fi Classics",
+      "description": "Landmark science fiction films, directors, and release years.",
+      "cards": [
+        { "question": "Who directed Blade Runner (1982)?", "answer": "Ridley Scott" },
+        { "question": "What year was The Matrix released?", "answer": "1999" },
+        { "question": "Who directed 2001: A Space Odyssey?", "answer": "Stanley Kubrick" },
+        { "question": "In Alien (1979), what is the name of the commercial towing ship?", "answer": "USCSS Nostromo" },
+        { "question": "Who directed Arrival (2016)?", "answer": "Denis Villeneuve" },
+        { "question": "What is the replicant test called in Blade Runner?", "answer": "Voight-Kampff test" },
+        { "question": "Which film features the line \"I am your father\"?", "answer": "The Empire Strikes Back (1980)" },
+        { "question": "Who directed Ex Machina (2014)?", "answer": "Alex Garland" },
+        { "question": "In The Terminator (1984), who plays the Terminator?", "answer": "Arnold Schwarzenegger" },
+        { "question": "What planet is Dune (2021) primarily set on?", "answer": "Arrakis" }
+      ]
+    },
+    {
+      "name": "Sci-Fi Worlds",
+      "description": "Ships, characters, and tech from famous sci-fi movies.",
+      "cards": [
+        { "question": "What ship does Ellen Ripley escape on at the end of Alien?", "answer": "Narcissus (shuttlecraft)" },
+        { "question": "In Star Wars, what species is Chewbacca?", "answer": "Wookiee" },
+        { "question": "What is the name of the AI in 2001: A Space Odyssey?", "answer": "HAL 9000" },
+        { "question": "In Back to the Future, what speed must the DeLorean reach?", "answer": "88 mph" },
+        { "question": "What is the name of the dinosaur theme park in Jurassic Park (1993)?", "answer": "Jurassic Park (on Isla Nublar)" },
+        { "question": "In The Fifth Element, what is the perfect being called?", "answer": "The Fifth Element / Leeloo" },
+        { "question": "What color pill does Neo take in The Matrix?", "answer": "Red pill" },
+        { "question": "In Interstellar, what phenomenon do the astronauts use to travel vast distances?", "answer": "Wormhole" },
+        { "question": "What is the name of the mining ship in Alien (1979)?", "answer": "Nostromo" },
+        { "question": "In E.T., what candy does Elliott use to lure E.T.?", "answer": "Reese's Pieces" }
+      ]
+    },
+    {
+      "name": "Horror Legends",
+      "description": "Classic and modern horror films, directors, and iconic moments.",
+      "cards": [
+        { "question": "Who directed Halloween (1978)?", "answer": "John Carpenter" },
+        { "question": "What is the name of the possessed doll in Child's Play (1988)?", "answer": "Chucky" },
+        { "question": "In The Shining (1980), what is the name of the haunted hotel?", "answer": "The Overlook Hotel" },
+        { "question": "Who directed Get Out (2017)?", "answer": "Jordan Peele" },
+        { "question": "What year was The Exorcist released?", "answer": "1973" },
+        { "question": "In Scream (1996), what is the killer's primary weapon?", "answer": "Knife" },
+        { "question": "Who directed The Texas Chain Saw Massacre (1974)?", "answer": "Tobe Hooper" },
+        { "question": "In A Nightmare on Elm Street, what is the villain's name?", "answer": "Freddy Krueger" },
+        { "question": "What fictional town is attacked in Jaws (1975)?", "answer": "Amity Island" },
+        { "question": "Who directed Hereditary (2018)?", "answer": "Ari Aster" }
+      ]
+    },
+    {
+      "name": "Horror Creatures",
+      "description": "Match monsters and villains to their horror films.",
+      "cards": [
+        { "question": "Xenomorph", "answer": "Alien (1979)" },
+        { "question": "Pennywise", "answer": "It (1990 miniseries / 2017 film)" },
+        { "question": "The Thing", "answer": "The Thing (1982)" },
+        { "question": "Pinhead", "answer": "Hellraiser (1987)" },
+        { "question": "Samara Morgan", "answer": "The Ring (2002)" },
+        { "question": "Dracula (Bela Lugosi era icon)", "answer": "Dracula (1931)" },
+        { "question": "The Babadook", "answer": "The Babadook (2014)" },
+        { "question": "Leatherface", "answer": "The Texas Chain Saw Massacre (1974)" },
+        { "question": "The Creature from the Black Lagoon", "answer": "Creature from the Black Lagoon (1954)" },
+        { "question": "M3GAN", "answer": "M3GAN (2022)" }
+      ]
     }
   ]
 }
