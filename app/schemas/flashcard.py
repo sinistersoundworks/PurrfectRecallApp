@@ -6,6 +6,12 @@ class FlashcardBase(BaseModel):
     subject_id: int
     question: str
     answer: str
+    example: str | None = None
+    ipa: str | None = None
+    image_path: str | None = None
+    audio_word: str | None = None
+    audio_meaning: str | None = None
+    audio_example: str | None = None
 
 
 class FlashcardCreate(FlashcardBase):
@@ -16,6 +22,12 @@ class FlashcardUpdate(BaseModel):
     subject_id: int | None = None
     question: str | None = None
     answer: str | None = None
+    example: str | None = None
+    ipa: str | None = None
+    image_path: str | None = None
+    audio_word: str | None = None
+    audio_meaning: str | None = None
+    audio_example: str | None = None
 
 
 class FlashcardReview(BaseModel):

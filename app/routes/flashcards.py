@@ -39,6 +39,12 @@ def create_flashcard(card: FlashcardCreate, db: Session = Depends(get_db)):
         subject_id=card.subject_id,
         question=card.question,
         answer=card.answer,
+        example=card.example,
+        ipa=card.ipa,
+        image_path=card.image_path,
+        audio_word=card.audio_word,
+        audio_meaning=card.audio_meaning,
+        audio_example=card.audio_example,
     )
 
     db.add(db_card)
@@ -91,6 +97,18 @@ def update_flashcard(
         db_card.question = patch.question
     if patch.answer is not None:
         db_card.answer = patch.answer
+    if patch.example is not None:
+        db_card.example = patch.example
+    if patch.ipa is not None:
+        db_card.ipa = patch.ipa
+    if patch.image_path is not None:
+        db_card.image_path = patch.image_path
+    if patch.audio_word is not None:
+        db_card.audio_word = patch.audio_word
+    if patch.audio_meaning is not None:
+        db_card.audio_meaning = patch.audio_meaning
+    if patch.audio_example is not None:
+        db_card.audio_example = patch.audio_example
 
     db.commit()
     db.refresh(db_card)

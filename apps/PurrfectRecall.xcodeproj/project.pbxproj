@@ -1,0 +1,424 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		414DBADAC302D978F8124BE0 /* PurrfectRecallIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 630BBA2B4B34D27271D225F6 /* PurrfectRecallIOSApp.swift */; };
+		485394C71459B5F131A1C9D5 /* PurrfectRecallMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 279292928C8A8E6B22CD94D1 /* PurrfectRecallMacApp.swift */; };
+		B3ECA1F7AB3A73BF733E895E /* PurrfectRecallKit in Frameworks */ = {isa = PBXBuildFile; productRef = BE4FA069D137E5FEDF2C0356 /* PurrfectRecallKit */; };
+		F0190F0B411F8ADF9EBCA1FC /* PurrfectRecallKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9C0729120CE45EC32F92E917 /* PurrfectRecallKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		279292928C8A8E6B22CD94D1 /* PurrfectRecallMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurrfectRecallMacApp.swift; sourceTree = "<group>"; };
+		389338EB4852AB1CFE05AE50 /* PurrfectRecallKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PurrfectRecallKit; path = PurrfectRecallKit; sourceTree = SOURCE_ROOT; };
+		630BBA2B4B34D27271D225F6 /* PurrfectRecallIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurrfectRecallIOSApp.swift; sourceTree = "<group>"; };
+		C734958526FD0C4965FEF08C /* PurrfectRecallIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PurrfectRecallIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9ABAC441FA3188D8C0AC0AB /* PurrfectRecallMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PurrfectRecallMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1C8C287C045CBC625009DD1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0190F0B411F8ADF9EBCA1FC /* PurrfectRecallKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A97AA64D2D172080789327F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3ECA1F7AB3A73BF733E895E /* PurrfectRecallKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1FF5989F4B3076978A8A18A0 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				389338EB4852AB1CFE05AE50 /* PurrfectRecallKit */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		2B5787CC833510363A40CAE9 /* PurrfectRecallIOS */ = {
+			isa = PBXGroup;
+			children = (
+				630BBA2B4B34D27271D225F6 /* PurrfectRecallIOSApp.swift */,
+			);
+			path = PurrfectRecallIOS;
+			sourceTree = "<group>";
+		};
+		4669D932F8FAED7556D29C8E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C734958526FD0C4965FEF08C /* PurrfectRecallIOS.app */,
+				D9ABAC441FA3188D8C0AC0AB /* PurrfectRecallMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AA9EE0DFAF234784EFFDBE0E /* PurrfectRecallMac */ = {
+			isa = PBXGroup;
+			children = (
+				279292928C8A8E6B22CD94D1 /* PurrfectRecallMacApp.swift */,
+			);
+			path = PurrfectRecallMac;
+			sourceTree = "<group>";
+		};
+		C33AD0369A3C15D118FD2363 = {
+			isa = PBXGroup;
+			children = (
+				1FF5989F4B3076978A8A18A0 /* Packages */,
+				2B5787CC833510363A40CAE9 /* PurrfectRecallIOS */,
+				AA9EE0DFAF234784EFFDBE0E /* PurrfectRecallMac */,
+				4669D932F8FAED7556D29C8E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1CDAFFCA8109A7D4A05A6AD2 /* PurrfectRecallMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3A7ADCCE299F80E1CA853292 /* Build configuration list for PBXNativeTarget "PurrfectRecallMac" */;
+			buildPhases = (
+				5F43A405479AE80AF966733C /* Sources */,
+				1C8C287C045CBC625009DD1C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PurrfectRecallMac;
+			packageProductDependencies = (
+				9C0729120CE45EC32F92E917 /* PurrfectRecallKit */,
+			);
+			productName = PurrfectRecallMac;
+			productReference = D9ABAC441FA3188D8C0AC0AB /* PurrfectRecallMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3757455FABFD72E65B162B83 /* PurrfectRecallIOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3EE2A9435A9B342DA678ECA9 /* Build configuration list for PBXNativeTarget "PurrfectRecallIOS" */;
+			buildPhases = (
+				805CD58E7510270E27291EE4 /* Sources */,
+				4A97AA64D2D172080789327F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PurrfectRecallIOS;
+			packageProductDependencies = (
+				BE4FA069D137E5FEDF2C0356 /* PurrfectRecallKit */,
+			);
+			productName = PurrfectRecallIOS;
+			productReference = C734958526FD0C4965FEF08C /* PurrfectRecallIOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4A08C6E55AE5340E74537525 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 490031FB2D98B7B81C61AA7C /* Build configuration list for PBXProject "PurrfectRecall" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = C33AD0369A3C15D118FD2363;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B68C507924B750AE62626F0C /* XCLocalSwiftPackageReference "PurrfectRecallKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 4669D932F8FAED7556D29C8E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3757455FABFD72E65B162B83 /* PurrfectRecallIOS */,
+				1CDAFFCA8109A7D4A05A6AD2 /* PurrfectRecallMac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5F43A405479AE80AF966733C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				485394C71459B5F131A1C9D5 /* PurrfectRecallMacApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		805CD58E7510270E27291EE4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				414DBADAC302D978F8124BE0 /* PurrfectRecallIOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		08CA04B29A3F2F5252F76A8A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Purrfect Recall";
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.purrfectrecall.mac;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0919023BCD824D336D72EF15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Purrfect Recall";
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.purrfectrecall.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		661EF7BBE677B6A420A41845 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Purrfect Recall";
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.purrfectrecall.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6F6EA5CA4914B3A652F51E0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CDD7FD2B9926C133808AAC04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Purrfect Recall";
+				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.purrfectrecall.mac;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D212DC3DC10B8290B0F601ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3A7ADCCE299F80E1CA853292 /* Build configuration list for PBXNativeTarget "PurrfectRecallMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				08CA04B29A3F2F5252F76A8A /* Debug */,
+				CDD7FD2B9926C133808AAC04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3EE2A9435A9B342DA678ECA9 /* Build configuration list for PBXNativeTarget "PurrfectRecallIOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				661EF7BBE677B6A420A41845 /* Debug */,
+				0919023BCD824D336D72EF15 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		490031FB2D98B7B81C61AA7C /* Build configuration list for PBXProject "PurrfectRecall" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F6EA5CA4914B3A652F51E0F /* Debug */,
+				D212DC3DC10B8290B0F601ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B68C507924B750AE62626F0C /* XCLocalSwiftPackageReference "PurrfectRecallKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PurrfectRecallKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9C0729120CE45EC32F92E917 /* PurrfectRecallKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PurrfectRecallKit;
+		};
+		BE4FA069D137E5FEDF2C0356 /* PurrfectRecallKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PurrfectRecallKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 4A08C6E55AE5340E74537525 /* Project object */;
+}

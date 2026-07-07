@@ -1,7 +1,7 @@
-# Handoff: StudyWeb — Flashcard App UI Redesign
+# Handoff: Purrfect Recall — Flashcard App UI Redesign
 
 ## Overview
-A redesigned desktop and mobile UI for **StudyWeb** (the flashcard/spaced-repetition app in the `AnkiLikeWeb` repo — FastAPI backend, vanilla HTML/CSS/JS frontend). This redesign keeps the app's existing feature set (Home/Dashboard, Study session, Deck + card management, Stats) but reskins it in a dark, dense, "pro tool" visual language, and adds three new surfaces the current MVP doesn't have: deck progress/streaks on the dashboard, a searchable card browser per deck, and a stats screen with charts.
+A redesigned desktop and mobile UI for **Purrfect Recall** (the flashcard/spaced-repetition app in the `AnkiLikeWeb` repo — FastAPI backend, vanilla HTML/CSS/JS frontend). This redesign keeps the app's existing feature set (Home/Dashboard, Study session, Deck + card management, Stats) but reskins it in a dark, dense, "pro tool" visual language, and adds three new surfaces the current MVP doesn't have: deck progress/streaks on the dashboard, a searchable card browser per deck, and a stats screen with charts.
 
 ## About the Design Files
 The files in this bundle (`Flashcard App - Desktop.dc.html`, `Flashcard App - Mobile.dc.html`) are **design references built in HTML** — interactive prototypes showing intended layout, styling, and behavior. They are **not production code to copy directly**: they use a proprietary component-streaming format (custom `<x-dc>`/`<x-import>` tags, a `support.js` runtime) that only exists in the design tool that produced them and will not run as-is in a normal app.

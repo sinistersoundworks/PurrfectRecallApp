@@ -1,10 +1,10 @@
-# AGENTS.md — StudyWeb / AnkiLikeWeb
+# AGENTS.md — Purrfect Recall / AnkiLikeWeb
 
 Instructions for AI agents (Cursor, Claude, etc.) working in this repository.
 
 ## What this project is
 
-**StudyWeb** (repo name: AnkiLikeWeb) is a minimal spaced-repetition flashcard application:
+**Purrfect Recall** (working name; repo: `AnkiLikeWeb`) is a minimal spaced-repetition flashcard application:
 
 - **Subjects** = decks (name + description)
 - **Flashcards** = question/answer pairs belonging to a subject
@@ -106,8 +106,8 @@ Match existing patterns (plain `fetch`, `alert()` for errors, no framework) unle
 | `app/routes/subjects.py` | Subject CRUD |
 | `app/models/flashcard.py` | Card + SRS fields (`interval`, `ease_factor`, `repetition`, `due_date`) |
 | `app/models/review.py` | Review audit log (one row per graded review) |
-| `apps/StudyWebKit/` | Shared SwiftUI library (design system, API client, views) |
-| `apps/StudyWeb.xcodeproj` | Native macOS + iOS app targets |
+| `apps/PurrfectRecallKit/` | Shared SwiftUI library (design system, API client, views) |
+| `apps/PurrfectRecall.xcodeproj` | Native macOS + iOS app targets |
 | `frontend/index.html` | Legacy browser UI |
 
 ---

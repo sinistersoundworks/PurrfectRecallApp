@@ -1,6 +1,6 @@
 # SM-2 spaced repetition
 
-StudyWeb uses the **SM-2** algorithm for scheduling flashcard reviews. SM-2 is simpler than FSRS but works well for an Anki-like MVP. The confidence slider in the Study UI maps to SM-2 quality scores so the scheduling engine can be swapped later (e.g. FSRS) without changing the UI.
+Purrfect Recall uses the **SM-2** algorithm for scheduling flashcard reviews. SM-2 is simpler than FSRS but works well for an Anki-like MVP. The confidence slider in the Study UI maps to SM-2 quality scores so the scheduling engine can be swapped later (e.g. FSRS) without changing the UI.
 
 Implementation: `app/routes/flashcards.py` → `_schedule_next_review()`
 
@@ -44,7 +44,7 @@ Classic Anki uses four buttons mapped to SM-2 **quality** (0–5):
 | Good | 4 |
 | Easy | 5 |
 
-StudyWeb uses a **confidence slider** (0–100%) instead. The frontend converts it in `confidenceToSM2()` (`frontend/index.html`):
+Purrfect Recall uses a **confidence slider** (0–100%) instead. The frontend converts it in `confidenceToSM2()` (`frontend/index.html`):
 
 | Confidence | SM-2 quality |
 |------------|-------------:|

@@ -44,7 +44,7 @@ echo "Starting frontend → http://${HOST}:${FRONTEND_PORT}"
 FRONTEND_PID=$!
 
 echo ""
-echo "StudyWeb is running:"
+echo "Purrfect Recall is running:"
 echo "  App:      http://${HOST}:${FRONTEND_PORT}"
 echo "  API:      http://${HOST}:${API_PORT}"
 echo "  API docs: http://${HOST}:${API_PORT}/docs"

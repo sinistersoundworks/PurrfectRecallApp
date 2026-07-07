@@ -1,6 +1,6 @@
-# StudyWeb (AnkiLikeWeb)
+# Purrfect Recall (AnkiLikeWeb)
 
-A lightweight spaced-repetition flashcard app inspired by Anki. Manage **subjects** (decks), create **flashcards**, and review them with an SM-2 scheduling algorithm.
+**Purrfect Recall** is the working name for this spaced-repetition flashcard app (repo: `AnkiLikeWeb`). Manage **subjects** (decks), create **flashcards**, and review them with an SM-2 scheduling algorithm.
 
 The project is an MVP: a FastAPI backend with SQLite persistence and a vanilla HTML/CSS/JS frontend that talks to the API over HTTP.
 
@@ -67,10 +67,10 @@ AnkiLikeWeb/
 │   ├── index.html           # Legacy browser UI (dev/testing)
 │   └── styles.css
 ├── apps/
-│   ├── StudyWeb.xcodeproj   # Native macOS + iOS apps
-│   ├── StudyWebKit/         # Shared SwiftUI library
-│   ├── StudyWebMac/
-│   └── StudyWebIOS/
+│   ├── PurrfectRecall.xcodeproj   # Native macOS + iOS apps
+│   ├── PurrfectRecallKit/         # Shared SwiftUI library
+│   ├── PurrfectRecallMac/
+│   └── PurrfectRecallIOS/
 ├── docs/
 │   ├── sm2-scheduling.md      # SM-2 algorithm and confidence slider mapping
 │   └── native-apps.md         # Native app architecture and build steps
@@ -138,8 +138,8 @@ See **[`docs/native-apps.md`](docs/native-apps.md)** for the full guide. Quick s
 
 ```bash
 ./scripts/dev.sh          # API on :8000
-cd apps && open StudyWeb.xcodeproj
-# Run scheme StudyWebMac or StudyWebIOS
+cd apps && open PurrfectRecall.xcodeproj
+# Run scheme PurrfectRecallMac or PurrfectRecallIOS
 ```
 
 The native clients implement the BlackCat Audio redesign from `design_handoff_flashcard_app_ui/`.
@@ -171,10 +171,21 @@ uv run python scripts/add_review_table.py
 | `GET` | `/flashcards` | List cards; optional `?subject_id=` filter |
 | `GET` | `/flashcards/due` | Cards with `due_date <= now` |
 | `GET` | `/flashcards/{id}` | Get one card |
-| `POST` | `/flashcards` | Create `{ subject_id, question, answer }` |
+| `POST` | `/flashcards` | Create card (see media fields below) |
 | `PUT` | `/flashcards/{id}` | Partial update |
 | `DELETE` | `/flashcards/{id}` | Delete card |
 | `POST` | `/flashcards/{id}/review` | Apply SM-2 review `{ quality: 0–5 }` |
+
+Optional flashcard media fields ( layout): `example`, `ipa`, `image_path`, `audio_word`, `audio_meaning`, `audio_example`. See `docs/media-cards.md`.
+
+### Media (`/media`)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/media/{path}` | Serve file from repo `media/` directory |
+| `POST` | `/media/upload` | Upload image/audio; returns `{ path, url }` |
+
+Sample deck: `uv run python scripts/add_flashcard_media_columns.py && uv run python scripts/`
 
 ### Stats (`/stats`)
 
@@ -219,7 +230,7 @@ erDiagram
 
 ### SM-2 scheduling
 
-StudyWeb implements the **SM-2** spaced-repetition algorithm. Each card tracks `interval`, `repetition`, `ease_factor`, and `due_date`. Reviews are submitted via `POST /flashcards/{id}/review` with a quality score 0–5.
+Purrfect Recall implements the **SM-2** spaced-repetition algorithm. Each card tracks `interval`, `repetition`, `ease_factor`, and `due_date`. Reviews are submitted via `POST /flashcards/{id}/review` with a quality score 0–5.
 
 The Study UI uses a **confidence slider** (0–100%) mapped to SM-2 quality instead of Anki’s four buttons — same scheduler, smoother UX. This mapping is designed so a future **FSRS** backend can replace SM-2 without changing the UI.
 

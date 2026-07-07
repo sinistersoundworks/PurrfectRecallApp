@@ -1,38 +1,38 @@
-name: StudyWeb
+name: PurrfectRecall
 options:
-  bundleIdPrefix: com.studyweb
+  bundleIdPrefix: com.purrfectrecall
   deploymentTarget:
     iOS: "17.0"
     macOS: "14.0"
   createIntermediateGroups: true
 packages:
-  StudyWebKit:
-    path: StudyWebKit
+  PurrfectRecallKit:
+    path: PurrfectRecallKit
 targets:
-  StudyWebMac:
+  PurrfectRecallMac:
     type: application
     platform: macOS
     sources:
-      - path: StudyWebMac
+      - path: PurrfectRecallMac
     dependencies:
-      - package: StudyWebKit
-        product: StudyWebKit
+      - package: PurrfectRecallKit
+        product: PurrfectRecallKit
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.studyweb.mac
+      PRODUCT_BUNDLE_IDENTIFIER: com.purrfectrecall.mac
       GENERATE_INFOPLIST_FILE: YES
       INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads: YES
-      INFOPLIST_KEY_CFBundleDisplayName: StudyWeb
-  StudyWebIOS:
+      INFOPLIST_KEY_CFBundleDisplayName: "Purrfect Recall"
+  PurrfectRecallIOS:
     type: application
     platform: iOS
     sources:
-      - path: StudyWebIOS
+      - path: PurrfectRecallIOS
     dependencies:
-      - package: StudyWebKit
-        product: StudyWebKit
+      - package: PurrfectRecallKit
+        product: PurrfectRecallKit
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.studyweb.ios
+      PRODUCT_BUNDLE_IDENTIFIER: com.purrfectrecall.ios
       GENERATE_INFOPLIST_FILE: YES
       INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsArbitraryLoads: YES
-      INFOPLIST_KEY_CFBundleDisplayName: StudyWeb
+      INFOPLIST_KEY_CFBundleDisplayName: "Purrfect Recall"
       INFOPLIST_KEY_UILaunchScreen_Generation: YES
