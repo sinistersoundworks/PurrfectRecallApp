@@ -39,7 +39,7 @@ MIGRATION_SCRIPTS := \
 .PHONY: help \
 	deps sync migrate verify-api build-api \
 	build rebuild clean clean-py clean-native \
-	start start-macos start-ios stop restart logs status \
+	start start-macos start-ios stop restart logs trace watch-api status \
 	dev-api dev-web \
 	xcodegen \
 	build-macos build-ios run-macos run-ios-sim \
@@ -120,6 +120,13 @@ dev-web: ## Legacy: API + web frontend in foreground (./scripts/dev.sh)
 
 logs: ## Tail API log
 	@tail -f "$(DEV_DIR)/backend.log"
+
+trace: ## Tail API lifecycle trace (starts/stops/signals)
+	@tail -f "$(DEV_DIR)/api-trace.log"
+
+watch-api: ## Poll API every 2s and log up/down transitions (Ctrl+C to stop)
+	@chmod +x "$(ROOT)/scripts/watch-api.sh"
+	@"$(ROOT)/scripts/watch-api.sh"
 
 status: ## Show API and native app status
 	@port_pid() { lsof -ti ":$$1" 2>/dev/null | head -1; }; \

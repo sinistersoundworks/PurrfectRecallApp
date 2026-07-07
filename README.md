@@ -224,6 +224,7 @@ Run `uv run python scripts/add_flashcard_media_columns.py` on existing databases
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/stats` | Aggregated stats + `recommended_daily_reviews` |
+| `GET` | `/stats/calibration` | Confidence calibration hints; `?subject_id=` |
 
 Run `uv run python scripts/add_review_table.py` on existing databases so review history is logged for stats.
 

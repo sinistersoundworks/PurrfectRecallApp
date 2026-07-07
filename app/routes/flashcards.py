@@ -14,6 +14,7 @@ from app.schemas.flashcard import (
     FlashcardReviewResult,
     FlashcardUpdate,
 )
+from app.services.calibration import adjust_predicted_recall, build_calibration_snapshot
 from app.services.fsrs_scheduler import predicted_recall_pct, schedule_review
 from app.services.session_queue import build_study_queue
 
@@ -34,11 +35,26 @@ def _validate_subject(db: Session, subject_id: int) -> Subject:
     return subject
 
 
-def _to_response(card: Flashcard) -> FlashcardResponse:
-    data = FlashcardResponse.model_validate(card)
-    return data.model_copy(
-        update={"predicted_recall_pct": predicted_recall_pct(card)}
+def _to_response(
+    card: Flashcard,
+    calibration: dict | None = None,
+) -> FlashcardResponse:
+    raw = predicted_recall_pct(card)
+    adjusted = (
+        adjust_predicted_recall(raw, card.subject_id, calibration)
+        if calibration is not None
+        else raw
     )
+    data = FlashcardResponse.model_validate(card)
+    return data.model_copy(update={"predicted_recall_pct": adjusted})
+
+
+def _responses(
+    cards: list[Flashcard],
+    db: Session,
+) -> list[FlashcardResponse]:
+    calibration = build_calibration_snapshot(db)
+    return [_to_response(card, calibration) for card in cards]
 
 
 @router.post("", response_model=FlashcardResponse)
@@ -61,7 +77,8 @@ def create_flashcard(card: FlashcardCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_card)
 
-    return _to_response(db_card)
+    calibration = build_calibration_snapshot(db)
+    return _to_response(db_card, calibration)
 
 
 @router.get("", response_model=list[FlashcardResponse])
@@ -73,7 +90,7 @@ def get_flashcards(
     if subject_id is not None:
         query = query.filter(Flashcard.subject_id == subject_id)
     cards = query.order_by(Flashcard.due_date).all()
-    return [_to_response(card) for card in cards]
+    return _responses(cards, db)
 
 
 @router.get("/due", response_model=list[FlashcardResponse])
@@ -85,7 +102,7 @@ def get_due_flashcards(db: Session = Depends(get_db)):
         .order_by(Flashcard.due_date)
         .all()
     )
-    return [_to_response(card) for card in cards]
+    return _responses(cards, db)
 
 
 @router.get("/study-queue", response_model=list[FlashcardResponse])
@@ -103,12 +120,13 @@ def get_study_queue(
     if not cards and subject_id is not None:
         cards = query.all()
     ordered = build_study_queue(cards, limit=limit)
-    return [_to_response(card) for card in ordered]
+    return _responses(ordered, db)
 
 
 @router.get("/{flashcard_id}", response_model=FlashcardResponse)
 def get_flashcard(flashcard_id: int, db: Session = Depends(get_db)):
-    return _to_response(_get_card(db, flashcard_id))
+    calibration = build_calibration_snapshot(db)
+    return _to_response(_get_card(db, flashcard_id), calibration)
 
 
 @router.put("/{flashcard_id}", response_model=FlashcardResponse)
@@ -141,7 +159,8 @@ def update_flashcard(
 
     db.commit()
     db.refresh(db_card)
-    return _to_response(db_card)
+    calibration = build_calibration_snapshot(db)
+    return _to_response(db_card, calibration)
 
 
 @router.delete("/{flashcard_id}")
@@ -184,7 +203,8 @@ def review_flashcard(
 
     db.commit()
     db.refresh(card)
-    response = _to_response(card)
+    calibration = build_calibration_snapshot(db)
+    response = _to_response(card, calibration)
     return FlashcardReviewResult(
         card=response,
         predicted_recall_before_pct=predicted_before,

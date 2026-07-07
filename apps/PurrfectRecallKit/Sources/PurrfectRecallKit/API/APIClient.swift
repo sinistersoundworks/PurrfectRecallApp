@@ -174,6 +174,32 @@ public struct APIClient: Sendable {
     public func fetchStats() async throws -> StatsDTO {
         try await request("/stats")
     }
+
+    /// Lightweight health check for API reachability.
+    public func ping() async -> Bool {
+        struct Health: Decodable { let status: String }
+        do {
+            var req = URLRequest(url: try url("/"))
+            req.httpMethod = "GET"
+            req.timeoutInterval = 2
+            let (data, response) = try await session.data(for: req)
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                return false
+            }
+            let health = try decoder.decode(Health.self, from: data)
+            return health.status == "ok"
+        } catch {
+            return false
+        }
+    }
+
+    public func fetchCalibration(subjectId: Int? = nil) async throws -> CalibrationDTO {
+        var path = "/stats/calibration"
+        if let subjectId {
+            path += "?subject_id=\(subjectId)"
+        }
+        return try await request(path)
+    }
 }
 
 private enum APIDateParser {

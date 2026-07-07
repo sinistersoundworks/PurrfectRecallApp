@@ -9,14 +9,17 @@ public struct MacDashboardView: View {
     public init() {}
 
     public var body: some View {
+        @Bindable var viewModel = viewModel
         MacPageContainer {
             playerHero
             DailyChallengesCard(engine: appState.gamification)
-            header
-            statsRow
-            decksSection
+            header(viewModel: viewModel)
+            statsRow(viewModel: viewModel)
+            decksSection(viewModel: viewModel)
         }
-        .task { await viewModel.load(using: appState.api, gamification: appState.gamification) }
+        .task(id: appState.dataRefreshToken) {
+            await viewModel.load(using: appState.api, gamification: appState.gamification)
+        }
         .overlay(alignment: .top) {
             if let error = viewModel.loadError {
                 errorBanner(error)
@@ -32,7 +35,7 @@ public struct MacDashboardView: View {
         )
     }
 
-    private var header: some View {
+    private func header(viewModel: DashboardViewModel) -> some View {
         HStack(alignment: .top) {
             MacSectionHeader(
                 Greeting.current(),
@@ -42,7 +45,7 @@ public struct MacDashboardView: View {
             )
             Spacer(minLength: 16)
             Button {
-                appState.startStudy(deckId: preferredStudyDeckId)
+                appState.startStudy(deckId: preferredStudyDeckId(viewModel: viewModel))
             } label: {
                 Label("Start Study", systemImage: "play.fill")
             }
@@ -54,7 +57,7 @@ public struct MacDashboardView: View {
     }
 
     @ViewBuilder
-    private var statsRow: some View {
+    private func statsRow(viewModel: DashboardViewModel) -> some View {
         if let stats = viewModel.stats {
             LazyVGrid(
                 columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 4),
@@ -68,7 +71,7 @@ public struct MacDashboardView: View {
         }
     }
 
-    private var decksSection: some View {
+    private func decksSection(viewModel: DashboardViewModel) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Your Decks")
                 .font(.headline)
@@ -107,7 +110,7 @@ public struct MacDashboardView: View {
         }
     }
 
-    private var preferredStudyDeckId: Int? {
+    private func preferredStudyDeckId(viewModel: DashboardViewModel) -> Int? {
         viewModel.subjects.first { subject in
             (viewModel.deckStat(for: subject.id)?.due ?? 0) > 0
         }?.id ?? viewModel.subjects.first?.id

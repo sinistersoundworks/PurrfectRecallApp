@@ -43,6 +43,7 @@ public final class StudyViewModel {
     public var isStudying = false
     public var isRevealed = false
     public var confidence: Double = 50
+    public var calibrationHint: String?
     public var isSubmitting = false
     public var sessionStartedAt: Date?
     public var sessionId = UUID().uuidString
@@ -107,10 +108,14 @@ public final class StudyViewModel {
         sessionStartedAt = Date()
         guard let deckId = selectedDeckId else { return }
         do {
-            var cards = try await api.fetchStudyQueue(subjectId: deckId, limit: 50)
+            async let queueTask = api.fetchStudyQueue(subjectId: deckId, limit: 50)
+            async let calibrationTask = api.fetchCalibration(subjectId: deckId)
+            var cards = try await queueTask
             if cards.isEmpty {
                 cards = try await api.fetchFlashcards(subjectId: deckId)
             }
+            let calibration = try? await calibrationTask
+            calibrationHint = calibration?.deckHint ?? calibration?.globalHint
             queue = cards
             currentIndex = 0
             isStudying = !queue.isEmpty
@@ -128,6 +133,7 @@ public final class StudyViewModel {
         currentIndex = 0
         isStudying = false
         isRevealed = false
+        calibrationHint = nil
     }
 
     public func reveal() {
@@ -179,6 +185,7 @@ public final class DecksViewModel {
     public var subjects: [SubjectDTO] = []
     public var cards: [FlashcardDTO] = []
     public var selectedDeckId: Int?
+    public var loadError: String?
     public var searchText = ""
     public var newDeckName = ""
     public var newDeckDescription = ""
@@ -214,6 +221,7 @@ public final class DecksViewModel {
     }
 
     public func load(using api: APIClient) async {
+        loadError = nil
         do {
             subjects = try await api.fetchSubjects()
             if selectedDeckId == nil {
@@ -223,6 +231,7 @@ public final class DecksViewModel {
         } catch {
             subjects = []
             cards = []
+            loadError = error.localizedDescription
         }
     }
 

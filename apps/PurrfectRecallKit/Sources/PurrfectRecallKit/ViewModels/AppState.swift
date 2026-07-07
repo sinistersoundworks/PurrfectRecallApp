@@ -49,6 +49,8 @@ public final class AppState {
     public var studyDeckId: Int?
     public var apiBaseURL: String
     public var lastError: String?
+    public var isAPIReachable = false
+    public private(set) var dataRefreshToken = UUID()
 
     public let api = APIClient()
     public let gameCenter: GameCenterService
@@ -63,6 +65,28 @@ public final class AppState {
 
     public func saveAPIBaseURL() {
         APIConfig.setBaseURL(apiBaseURL)
+        isAPIReachable = false
+    }
+
+    public func refreshAPIHealth() async {
+        let ok = await api.ping()
+        if ok != isAPIReachable {
+            APITrace.log("health \(isAPIReachable ? "up" : "down") → \(ok ? "up" : "down") url=\(apiBaseURL)")
+        }
+        isAPIReachable = ok
+    }
+
+    public func bumpDataRefresh() {
+        dataRefreshToken = UUID()
+    }
+
+    /// Re-check API and tell views to reload when the server is back.
+    public func retryAPIConnection() async {
+        APITrace.log("retry tapped url=\(apiBaseURL)")
+        await refreshAPIHealth()
+        if isAPIReachable {
+            bumpDataRefresh()
+        }
     }
 
     public func openDeck(_ id: Int) {

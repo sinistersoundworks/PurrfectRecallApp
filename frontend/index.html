@@ -48,6 +48,7 @@
         </div>
         <div class="confidence-row" id="studyConfidenceRow">
           <div id="predictedRecallRow" style="margin-bottom:8px;color:#38C4F0;font-size:14px"></div>
+          <div id="calibrationHintRow" style="margin-bottom:8px;color:#888;font-size:13px"></div>
           <label for="confidenceRange">Confidence</label>
           <input id="confidenceRange" type="range" min="0" max="100" value="50" oninput="updateConfidenceValue(this.value)">
           <div class="confidence-value" id="confidenceValue">50%</div>
@@ -373,6 +374,22 @@
         // Study logic
         let studyQueue = [];
         let studyIndex = 0;
+        let studyCalibrationHint = null;
+
+        async function loadStudyCalibration(subjectId) {
+          studyCalibrationHint = null;
+          try {
+            const res = await fetch(`${API}/stats/calibration?subject_id=${subjectId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            studyCalibrationHint = data.deck_hint || data.global_hint || null;
+          } catch (_) {}
+        }
+
+        function showCalibrationHint() {
+          const el = document.getElementById('calibrationHintRow');
+          el.textContent = studyCalibrationHint || '';
+        }
 
         async function loadStudySubjects(){
           const res = await fetch(SUBJECTS_API);
@@ -407,6 +424,7 @@
           }
           studyIndex = 0;
           if (studyQueue.length === 0) return alert('No cards in this deck');
+          await loadStudyCalibration(subjectId);
           document.getElementById('studyArea').classList.remove('hidden');
           showCurrentStudyCard();
         }
@@ -414,6 +432,7 @@
         function stopStudy(){
           studyQueue = [];
           studyIndex = 0;
+          studyCalibrationHint = null;
           document.getElementById('studyArea').classList.add('hidden');
           document.getElementById('studyProgress').textContent = '';
         }
@@ -434,6 +453,7 @@
           } else {
             predEl.textContent = 'Predicted recall: new card';
           }
+          showCalibrationHint();
         }
 
         function toggleStudyReveal(){

@@ -36,11 +36,21 @@ Legacy SM-2 cards are converted on first FSRS review.
 
 ## Predicted recall
 
-`predicted_recall_pct` is **retrievability × 100** from FSRS at the current time:
+`predicted_recall_pct` is **retrievability × 100** from FSRS at the current time, lightly adjusted by deck calibration when 30+ confidence-rated reviews exist:
 
 - Returned on `GET /flashcards`, `GET /flashcards/study-queue`, and `POST …/review`
 - `null` for cards never reviewed
-- Replaces the placeholder `55 + confidence × 0.2` in clients when present
+- Calibration offset from `GET /stats/calibration` (see `app/services/calibration.py`)
+
+---
+
+## Confidence calibration
+
+After **30+ reviews** with a confidence slider value, the API learns per-deck bias:
+
+- `GET /stats/calibration?subject_id=` — overconfidence score, suggested offset, UI hint
+- Predicted recall blends FSRS with up to ±25% offset (35% blend factor)
+- Study UI shows hints like “You tend to overrate Spanish Essentials by ~12%”
 
 ---
 

@@ -1,14 +1,25 @@
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.flashcard import Flashcard
 from app.models.review import Review
 from app.models.subject import Subject
-from app.schemas.stats import DeckStats, ReviewDayCount, StatsResponse
+from app.schemas.stats import (
+    CalibrationResponse,
+    DeckCalibration,
+    DeckStats,
+    ReviewDayCount,
+    StatsResponse,
+)
+from app.services.calibration import (
+    MIN_REVIEWS,
+    build_calibration_snapshot,
+    deck_hint_for,
+)
 
 router = APIRouter(prefix="/stats", tags=["Stats"])
 
@@ -120,4 +131,45 @@ def get_stats(db: Session = Depends(get_db)):
         recommended_daily_reviews=recommended_daily,
         reviews_last_7_days=reviews_last_7_days,
         deck_stats=deck_stats,
+    )
+
+
+def _bucket_to_schema(bucket) -> DeckCalibration | None:
+    if bucket.subject_id is None:
+        return None
+    return DeckCalibration(
+        subject_id=bucket.subject_id,
+        subject_name=bucket.subject_name,
+        review_count=bucket.review_count,
+        ready=bucket.ready,
+        avg_confidence=bucket.avg_confidence,
+        actual_recall_pct=bucket.actual_recall_pct,
+        overconfidence_pct=bucket.overconfidence_pct,
+        suggested_offset_pct=bucket.suggested_offset_pct,
+        hint=bucket.hint,
+    )
+
+
+@router.get("/calibration", response_model=CalibrationResponse)
+def get_calibration(
+    subject_id: int | None = Query(None, description="Deck-specific hint"),
+    db: Session = Depends(get_db),
+):
+    snapshot = build_calibration_snapshot(db)
+    global_bucket = snapshot[None]
+    decks = [
+        schema
+        for sid, bucket in sorted(snapshot.items(), key=lambda item: (item[0] is None, item[0] or 0))
+        if sid is not None and (schema := _bucket_to_schema(bucket)) is not None
+    ]
+
+    return CalibrationResponse(
+        min_reviews_required=MIN_REVIEWS,
+        total_reviews_with_confidence=global_bucket.review_count,
+        global_ready=global_bucket.ready,
+        global_overconfidence_pct=global_bucket.overconfidence_pct,
+        global_suggested_offset_pct=global_bucket.suggested_offset_pct,
+        global_hint=global_bucket.hint,
+        deck_hint=deck_hint_for(snapshot, subject_id),
+        decks=decks,
     )

@@ -14,18 +14,33 @@ public struct MacDecksView: View {
         @Bindable var viewModel = viewModel
 
         HSplitView {
-            deckSidebar
-                .frame(minWidth: 220, idealWidth: 260, maxWidth: 320)
-            deckDetail
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            DeckSidebarPanel(
+                viewModel: viewModel,
+                showError: $showError,
+                api: appState.api
+            )
+            .frame(minWidth: 220, idealWidth: 260, maxWidth: 320)
+
+            DeckDetailPanel(
+                viewModel: viewModel,
+                cardSearchText: $cardSearchText,
+                showError: $showError,
+                appState: appState
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .navigationTitle(viewModel.selectedSubject?.name ?? "Decks")
-        .task {
-            await viewModel.load(using: appState.api)
-            if let deckId = appState.selectedDeckId {
-                viewModel.selectDeck(deckId)
-                appState.selectedDeckId = nil
-                await viewModel.loadCards(using: appState.api)
+        .task(id: appState.dataRefreshToken) {
+            await reloadDecks(viewModel: viewModel)
+        }
+        .overlay(alignment: .top) {
+            if let error = viewModel.loadError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(BCColor.colorDanger)
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
+                    .background(BCColor.colorDangerDim)
             }
         }
         .alert("Error", isPresented: Binding(
@@ -36,54 +51,64 @@ public struct MacDecksView: View {
         } message: {
             Text(showError ?? "")
         }
-        .sheet(item: $viewModel.editingCard) { _ in editCardSheet }
-        .sheet(item: $viewModel.editingSubject) { _ in editSubjectSheet }
+        .sheet(item: $viewModel.editingCard) { _ in
+            EditCardSheet(viewModel: viewModel, showError: $showError, api: appState.api)
+        }
+        .sheet(item: $viewModel.editingSubject) { _ in
+            EditSubjectSheet(viewModel: viewModel, showError: $showError, api: appState.api)
+        }
     }
 
-    private var deckSidebar: some View {
-        List(selection: $viewModel.selectedDeckId) {
-            Section("Decks") {
-                ForEach(viewModel.filteredSubjects) { subject in
-                    HStack(spacing: 10) {
-                        RoundedRectangle(cornerRadius: 3, style: .continuous)
-                            .fill(DeckColor.color(for: subject.id))
-                            .frame(width: 8, height: 8)
-                        Text(subject.name)
-                        Spacer()
-                        if viewModel.selectedDeckId == subject.id {
-                            Text("\(viewModel.cards.count)")
-                                .font(.caption.monospacedDigit())
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .tag(subject.id)
-                    .contextMenu {
-                        Button("Edit Deck…") { viewModel.beginEditSubject(subject) }
-                        Button("Delete Deck", role: .destructive) {
-                            Task {
-                                do { try await viewModel.deleteSubject(subject, using: appState.api) }
-                                catch { showError = error.localizedDescription }
-                            }
-                        }
-                    }
-                }
-            }
+    private func reloadDecks(viewModel: DecksViewModel) async {
+        await viewModel.load(using: appState.api)
+        if let deckId = appState.selectedDeckId {
+            viewModel.selectDeck(deckId)
+            appState.selectedDeckId = nil
+            await viewModel.loadCards(using: appState.api)
         }
-        .listStyle(.sidebar)
-        .safeAreaInset(edge: .top, spacing: 0) {
+    }
+}
+
+// MARK: - Sidebar
+
+private struct DeckSidebarPanel: View {
+    @Bindable var viewModel: DecksViewModel
+    @Binding var showError: String?
+    let api: APIClient
+
+    var body: some View {
+        VStack(spacing: 0) {
             TextField("Search decks", text: $viewModel.searchText)
                 .textFieldStyle(.roundedBorder)
                 .padding(12)
                 .background(.ultraThinMaterial)
                 .overlay(alignment: .bottom) { Divider() }
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
+
+            ScrollView {
+                LazyVStack(spacing: 4) {
+                    if viewModel.filteredSubjects.isEmpty {
+                        ContentUnavailableView(
+                            "No Decks",
+                            systemImage: "rectangle.stack",
+                            description: Text("Create a deck below or run `make start-api`.")
+                        )
+                        .frame(maxWidth: .infinity, minHeight: 140)
+                        .padding(.top, 16)
+                    } else {
+                        ForEach(viewModel.filteredSubjects) { subject in
+                            deckRow(subject)
+                        }
+                    }
+                }
+                .padding(8)
+            }
+
             VStack(alignment: .leading, spacing: 8) {
                 TextField("New deck name", text: $viewModel.newDeckName)
                     .textFieldStyle(.roundedBorder)
                 Button {
                     Task {
-                        do { try await viewModel.createDeck(using: appState.api) }
+                        do { try await viewModel.createDeck(using: api) }
                         catch { showError = error.localizedDescription }
                     }
                 } label: {
@@ -98,14 +123,63 @@ public struct MacDecksView: View {
             .background(.ultraThinMaterial)
             .overlay(alignment: .top) { Divider() }
         }
-        .onChange(of: viewModel.selectedDeckId) { _, _ in
-            cardSearchText = ""
-            Task { await viewModel.loadCards(using: appState.api) }
+        .background(BCColor.bgRaised)
+    }
+
+    private func deckRow(_ subject: SubjectDTO) -> some View {
+        let isSelected = viewModel.selectedDeckId == subject.id
+        return Button {
+            viewModel.selectDeck(subject.id)
+            Task { await viewModel.loadCards(using: api) }
+        } label: {
+            HStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                    .fill(DeckColor.color(for: subject.id))
+                    .frame(width: 8, height: 8)
+                Text(subject.name)
+                    .foregroundStyle(BCColor.fg1)
+                Spacer()
+                if isSelected {
+                    Text("\(viewModel.cards.count)")
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(isSelected ? BCColor.accentDim : Color.clear)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button("Edit Deck…") { viewModel.beginEditSubject(subject) }
+            Button("Delete Deck", role: .destructive) {
+                Task {
+                    do { try await viewModel.deleteSubject(subject, using: api) }
+                    catch { showError = error.localizedDescription }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Detail
+
+private struct DeckDetailPanel: View {
+    @Bindable var viewModel: DecksViewModel
+    @Binding var cardSearchText: String
+    @Binding var showError: String?
+    let appState: AppState
+
+    private var filteredCards: [FlashcardDTO] {
+        guard !cardSearchText.isEmpty else { return viewModel.cards }
+        return viewModel.cards.filter {
+            $0.question.localizedCaseInsensitiveContains(cardSearchText)
+                || $0.answer.localizedCaseInsensitiveContains(cardSearchText)
         }
     }
 
-    @ViewBuilder
-    private var deckDetail: some View {
+    var body: some View {
         if let subject = viewModel.selectedSubject {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
@@ -119,11 +193,10 @@ public struct MacDecksView: View {
                                     .font(.subheadline)
                                     .foregroundStyle(BCColor.fg2)
                             }
-                            if let stats = deckStats(for: subject.id) {
-                                Text("\(stats.mastered) mastered · \(stats.due) due · \(stats.total) cards")
-                                    .font(.caption.monospacedDigit())
-                                    .foregroundStyle(BCColor.fg3)
-                            }
+                            let stats = deckStats(for: subject.id)
+                            Text("\(stats.mastered) mastered · \(stats.due) due · \(stats.total) cards")
+                                .font(.caption.monospacedDigit())
+                                .foregroundStyle(BCColor.fg3)
                         }
                         Spacer()
                         HStack(spacing: 10) {
@@ -200,14 +273,6 @@ public struct MacDecksView: View {
         }
     }
 
-    private var filteredCards: [FlashcardDTO] {
-        guard !cardSearchText.isEmpty else { return viewModel.cards }
-        return viewModel.cards.filter {
-            $0.question.localizedCaseInsensitiveContains(cardSearchText)
-                || $0.answer.localizedCaseInsensitiveContains(cardSearchText)
-        }
-    }
-
     private func cardRow(_ card: FlashcardDTO) -> some View {
         HStack(alignment: .top, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
@@ -219,7 +284,6 @@ public struct MacDecksView: View {
                         Image(systemName: "photo.on.rectangle.angled")
                             .font(.caption)
                             .foregroundStyle(BCColor.accent)
-                            .help("Has image or audio")
                     }
                 }
                 Text(card.answer)
@@ -243,17 +307,24 @@ public struct MacDecksView: View {
         .padding(.vertical, 12)
     }
 
-    private func deckStats(for subjectId: Int) -> DeckStatsDTO? {
+    private func deckStats(for subjectId: Int) -> (mastered: Int, due: Int, total: Int) {
         let total = viewModel.cards.count
         let mastered = viewModel.cards.filter { $0.repetition >= 2 }.count
         let due = viewModel.cards.filter { $0.dueDate <= Date() }.count
-        return DeckStatsDTO(subjectId: subjectId, name: "", total: total, mastered: mastered, due: due, retentionPct: 0)
+        return (mastered, due, total)
     }
+}
 
-    private var editCardSheet: some View {
+// MARK: - Sheets
+
+private struct EditCardSheet: View {
+    @Bindable var viewModel: DecksViewModel
+    @Binding var showError: String?
+    let api: APIClient
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Edit Flashcard")
-                .font(.title3.weight(.semibold))
+            Text("Edit Flashcard").font(.title3.weight(.semibold))
             TextField("Question", text: $viewModel.editQuestion, axis: .vertical)
                 .textFieldStyle(.roundedBorder)
                 .lineLimit(2...6)
@@ -265,7 +336,7 @@ public struct MacDecksView: View {
                 Button("Cancel") { viewModel.editingCard = nil }
                 Button("Save") {
                     Task {
-                        do { try await viewModel.saveEditCard(using: appState.api) }
+                        do { try await viewModel.saveEditCard(using: api) }
                         catch { showError = error.localizedDescription }
                     }
                 }
@@ -276,11 +347,16 @@ public struct MacDecksView: View {
         .padding(24)
         .frame(width: 440)
     }
+}
 
-    private var editSubjectSheet: some View {
+private struct EditSubjectSheet: View {
+    @Bindable var viewModel: DecksViewModel
+    @Binding var showError: String?
+    let api: APIClient
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Edit Deck")
-                .font(.title3.weight(.semibold))
+            Text("Edit Deck").font(.title3.weight(.semibold))
             TextField("Name", text: $viewModel.editSubjectName)
                 .textFieldStyle(.roundedBorder)
             TextField("Description", text: $viewModel.editSubjectDescription)
@@ -290,7 +366,7 @@ public struct MacDecksView: View {
                 Button("Cancel") { viewModel.editingSubject = nil }
                 Button("Save") {
                     Task {
-                        do { try await viewModel.saveEditSubject(using: appState.api) }
+                        do { try await viewModel.saveEditSubject(using: api) }
                         catch { showError = error.localizedDescription }
                     }
                 }

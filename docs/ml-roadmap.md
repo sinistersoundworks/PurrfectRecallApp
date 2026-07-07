@@ -69,7 +69,7 @@ priority = w1 × overdue_days
 
 ---
 
-### 3. Confidence calibration — `planned`
+### 3. Confidence calibration — `shipped`
 
 **Goal:** Learn how each user’s slider maps to actual recall; improve predictions and nudges.
 
@@ -201,7 +201,7 @@ priority = w1 × overdue_days
 |-------|-------|-------------|--------|
 | **1** | FSRS + predicted recall (#1) | 2–3 days | `shipped` |
 | **2** | Smart queue (#2) + daily load (#5) | 2 days | `shipped` (v1 heuristics) |
-| **3** | Confidence calibration (#3) | 1–2 days | `planned` |
+| **3** | Confidence calibration (#3) | 1–2 days | `shipped` |
 | **4** | Deck insights (#4) + forecast (#6) | 2 days | `planned` |
 | **5** | LLM generation (#7) + enrichment (#8) | 3–4 days | `planned` |
 | **6** | Typed grading (#9) + speech (#10) + OCR (#11) | 1–2 weeks | `planned` |

@@ -160,6 +160,11 @@ public struct MacStudyView: View {
                             .foregroundStyle(BCColor.colorInfo)
                     }
                     BCMeter(value: Double(viewModel.predictedRecall))
+                    if let hint = viewModel.calibrationHint {
+                        Text(hint)
+                            .font(.caption)
+                            .foregroundStyle(BCColor.fg3)
+                    }
                 }
 
                 VStack(alignment: .leading, spacing: 8) {

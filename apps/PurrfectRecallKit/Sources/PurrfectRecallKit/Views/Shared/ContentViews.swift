@@ -217,6 +217,11 @@ public struct StudyContentView: View {
                         .foregroundStyle(BCColor.colorInfo)
                 }
                 BCMeter(value: Double(viewModel.predictedRecall))
+                if let hint = viewModel.calibrationHint {
+                    Text(hint)
+                        .font(BCFont.ui(BCFont.textXS))
+                        .foregroundStyle(BCColor.fg3)
+                }
                 HStack {
                     BCCapsLabel("Confidence")
                     Spacer()

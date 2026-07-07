@@ -104,6 +104,52 @@ public struct StatsDTO: Codable, Sendable {
     }
 }
 
+public struct DeckCalibrationDTO: Codable, Identifiable, Sendable {
+    public var id: Int { subjectId }
+    public let subjectId: Int
+    public let subjectName: String
+    public let reviewCount: Int
+    public let ready: Bool
+    public let avgConfidence: Double?
+    public let actualRecallPct: Double?
+    public let overconfidencePct: Double?
+    public let suggestedOffsetPct: Double?
+    public let hint: String?
+
+    enum CodingKeys: String, CodingKey {
+        case ready, hint
+        case subjectId = "subject_id"
+        case subjectName = "subject_name"
+        case reviewCount = "review_count"
+        case avgConfidence = "avg_confidence"
+        case actualRecallPct = "actual_recall_pct"
+        case overconfidencePct = "overconfidence_pct"
+        case suggestedOffsetPct = "suggested_offset_pct"
+    }
+}
+
+public struct CalibrationDTO: Codable, Sendable {
+    public let minReviewsRequired: Int
+    public let totalReviewsWithConfidence: Int
+    public let globalReady: Bool
+    public let globalOverconfidencePct: Double?
+    public let globalSuggestedOffsetPct: Double?
+    public let globalHint: String?
+    public let deckHint: String?
+    public let decks: [DeckCalibrationDTO]
+
+    enum CodingKeys: String, CodingKey {
+        case decks
+        case minReviewsRequired = "min_reviews_required"
+        case totalReviewsWithConfidence = "total_reviews_with_confidence"
+        case globalReady = "global_ready"
+        case globalOverconfidencePct = "global_overconfidence_pct"
+        case globalSuggestedOffsetPct = "global_suggested_offset_pct"
+        case globalHint = "global_hint"
+        case deckHint = "deck_hint"
+    }
+}
+
 public struct SubjectCreateRequest: Encodable, Sendable {
     public let name: String
     public let description: String?

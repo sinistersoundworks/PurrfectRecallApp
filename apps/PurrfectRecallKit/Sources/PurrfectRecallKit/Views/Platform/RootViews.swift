@@ -39,6 +39,19 @@ public struct MacRootView: View {
             }
         }
         .task { appState.bootstrapGamification() }
+        .task { await monitorAPIHealth() }
+    }
+
+    private func monitorAPIHealth() async {
+        var wasReachable = appState.isAPIReachable
+        while !Task.isCancelled {
+            await appState.refreshAPIHealth()
+            if appState.isAPIReachable && !wasReachable {
+                appState.bumpDataRefresh()
+            }
+            wasReachable = appState.isAPIReachable
+            try? await Task.sleep(for: .seconds(3))
+        }
     }
 
     private func sidebar(selection: Binding<AppTab>) -> some View {
@@ -70,12 +83,19 @@ public struct MacRootView: View {
                 .padding(.horizontal, 16)
                 HStack(spacing: 8) {
                 Circle()
-                    .fill(BCColor.colorActive)
+                    .fill(appState.isAPIReachable ? BCColor.colorActive : BCColor.colorDanger)
                     .frame(width: 7, height: 7)
-                Text("API Connected")
+                Text(appState.isAPIReachable ? "API Connected" : "API Unreachable")
                     .font(.caption)
-                    .foregroundStyle(BCColor.fg2)
+                    .foregroundStyle(appState.isAPIReachable ? BCColor.fg2 : BCColor.colorDanger)
                 Spacer()
+                if !appState.isAPIReachable {
+                    Button("Retry") {
+                        Task { await appState.retryAPIConnection() }
+                    }
+                    .buttonStyle(.borderless)
+                    .font(.caption)
+                }
                 Button {
                     showSettings = true
                 } label: {

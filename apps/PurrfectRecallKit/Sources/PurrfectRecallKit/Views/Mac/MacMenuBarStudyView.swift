@@ -197,6 +197,11 @@ public struct MacMenuBarStudyView: View {
     private var confidencePanel: some View {
         MacPanel("Rate Your Recall") {
             VStack(alignment: .leading, spacing: 12) {
+                if let hint = viewModel.calibrationHint {
+                    Text(hint)
+                        .font(.caption2)
+                        .foregroundStyle(BCColor.fg3)
+                }
                 HStack {
                     Text("Confidence")
                         .font(.caption.weight(.medium))

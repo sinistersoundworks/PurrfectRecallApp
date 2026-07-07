@@ -5,10 +5,11 @@ alwaysApply: true
 
 # Purrfect Recall conventions
 
-- Backend: FastAPI + SQLAlchemy + SQLite. Entry: `./scripts/dev.sh` or `uv run uvicorn app.main:app --reload`
-- Frontend: static `frontend/index.html` — serve separately, not via FastAPI
+- Backend: FastAPI + SQLAlchemy + SQLite. Dev: `make start-api` or `make dev-api`
+- Primary UI: native macOS/iOS apps (`apps/`). Legacy web: `frontend/index.html` via `make dev-web`
+- After app/API changes: `make rebuild` (rebuild + relaunch PurrfectRecallMac + API)
 - Layering: `app/routes/` → `app/schemas/` → `app/models/` → `study.db`
-- Spaced repetition: SM-2 in `app/routes/flashcards.py` (`_schedule_next_review`)
+- Spaced repetition: FSRS in `app/services/fsrs_scheduler.py`
 - No backend auth yet; do not assume `/auth` exists
 - Prefer minimal diffs; match existing patterns (no framework without request)
 - Read `AGENTS.md` and `README.md` before structural changes

@@ -17,13 +17,21 @@ fi
 
 mkdir -p "$DEV_DIR"
 
-if [[ -f "${DEV_DIR}/backend.pid" ]] && kill -0 "$(cat "${DEV_DIR}/backend.pid")" 2>/dev/null; then
+if [[ -f "${DEV_DIR}/backend.pid" ]] && kill -0 "$(cat "${DEV_DIR}/backend.pid")" 2>/dev/null \
+   && curl -sf "http://${HOST}:${API_PORT}/" >/dev/null 2>&1; then
   echo "Backend already running (pid $(cat "${DEV_DIR}/backend.pid"))."
 else
+  rm -f "${DEV_DIR}/backend.pid"
   echo "Starting backend → http://${HOST}:${API_PORT}"
-  nohup uv run uvicorn app.main:app --host "$HOST" --port "$API_PORT" \
-    >"${DEV_DIR}/backend.log" 2>&1 &
-  echo $! >"${DEV_DIR}/backend.pid"
+  UVICORN="${ROOT}/.venv/bin/uvicorn"
+  [[ -x "$UVICORN" ]] || uv sync
+  nohup "$UVICORN" app.main:app --host "$HOST" --port "$API_PORT" \
+    >>"${DEV_DIR}/backend.log" 2>&1 < /dev/null &
+  sleep 0.5
+  pid="$(lsof -ti ":${API_PORT}" 2>/dev/null | head -1 || true)"
+  if [[ -n "$pid" ]]; then
+    echo "$pid" >"${DEV_DIR}/backend.pid"
+  fi
 fi
 
 if [[ -f "${DEV_DIR}/frontend.pid" ]] && kill -0 "$(cat "${DEV_DIR}/frontend.pid")" 2>/dev/null; then
