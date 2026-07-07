@@ -135,11 +135,12 @@ priority = w1 × overdue_days
 
 | Area | Work |
 |------|------|
-| API | `POST /decks/generate` `{ topic, count, style }` |
-| API | `POST /decks/{id}/import-candidates` |
-| Backend | `app/services/generation.py` — OpenAI/Anthropic adapter behind interface |
+| API | `POST /decks/generate` `{ topic, count, style }` → draft candidates |
+| API | `POST /decks/{id}/import-candidates` → persist approved rows |
+| Backend | `app/services/generation.py` — provider adapter (OpenAI / Anthropic / Ollama) |
+| Config | Env: `LLM_PROVIDER`, `OPENAI_API_KEY` or `LLM_BASE_URL`; see Phase 5 plan |
 | UI | “Generate deck” sheet in Decks tab; staging list with approve/reject |
-| Safety | Rate limit; no auto-add to study queue |
+| Safety | Rate limit; no auto-add to study queue; clients never hold LLM keys |
 
 ---
 
@@ -150,8 +151,9 @@ priority = w1 × overdue_days
 | Area | Work |
 |------|------|
 | API | `POST /flashcards/{id}/enrich` `{ fields: ["example","ipa"] }` |
+| Backend | Reuse `generation.py` adapter; card context in prompt |
 | UI | “Suggest example” on card edit |
-| Storage | Write only on user accept |
+| Storage | Write only on user accept (existing `PUT /flashcards/{id}`) |
 
 ---
 
@@ -208,6 +210,71 @@ priority = w1 × overdue_days
 
 ---
 
+## Phase 5 plan — LLM generation & enrichment
+
+**Next up after Phase 4.** Features #7 and #8 share one backend LLM adapter; clients never call OpenAI/Anthropic directly.
+
+### What we add (internal FastAPI only)
+
+Native apps and web continue to call **your** API at `http://127.0.0.1:8000`. Phase 5 adds:
+
+| Endpoint | Body | Response |
+|----------|------|----------|
+| `POST /decks/generate` | `{ topic, count, style? }` | Draft cards (not persisted until approved) |
+| `POST /decks/{id}/import-candidates` | `{ candidates: [...] }` | Committed flashcards after user approve |
+| `POST /flashcards/{id}/enrich` | `{ fields: ["example","ipa"] }` | Suggested text; saved only on client accept |
+
+No new public/hosted API is required for local dev. Backend auth is still out of scope.
+
+### What calls what
+
+```
+PurrfectRecallMac / iOS / web
+        │  POST /decks/generate, /flashcards/{id}/enrich
+        ▼
+FastAPI  app/services/generation.py  (adapter interface)
+        │  outbound HTTPS (server-side only)
+        ▼
+LLM provider  — OpenAI, Anthropic, or local Ollama
+```
+
+- **Clients:** only talk to FastAPI; no API keys in Swift or `frontend/`.
+- **Backend:** holds the provider key or local model URL; makes outbound requests when a generate/enrich route is hit.
+
+### LLM provider options
+
+| Option | Config | Notes |
+|--------|--------|-------|
+| **OpenAI** (default in spec) | `OPENAI_API_KEY` | Chat/completions API; good quality, per-token cost |
+| **Anthropic** | `ANTHROPIC_API_KEY` | Same adapter slot; swap via env |
+| **Ollama (local)** | `LLM_BASE_URL=http://127.0.0.1:11434` | No external SaaS; same Mac as API; no key required |
+
+Implement one `LLMClient` protocol in `app/services/generation.py`; concrete providers behind env-driven factory. Keys live in `.env` (gitignored), never committed.
+
+### Safety & UX (non-negotiable)
+
+- Human approve/reject before cards enter `study.db`
+- Rate limit generate/enrich routes (per-IP or simple in-memory cap for MVP)
+- No auto-add to study queue
+- Enrichment: return suggestions only; `PUT /flashcards/{id}` on explicit accept
+
+### Prerequisites before coding Phase 5
+
+1. Choose provider (OpenAI vs Anthropic vs Ollama)
+2. Add `.env.example` with `LLM_PROVIDER`, `OPENAI_API_KEY` or `LLM_BASE_URL`
+3. `uv add openai` (or `anthropic`, or `httpx` for Ollama) — one dependency per chosen path
+4. Pydantic schemas for generate/enrich request/response
+5. Decks UI: generate sheet + candidate staging list; card edit: “Suggest example”
+
+### Out of scope for Phase 5
+
+- Exposing Purrfect Recall API to the internet
+- LLM calls from Swift (on-device models)
+- Auto-grading (#9) or OCR (#11)
+- User accounts / per-user LLM quotas (until auth exists)
+
+---
+
 ## Data contract (review log)
 
 All ML features share one event shape:
@@ -238,10 +305,11 @@ Phase 1 ships `quality` + `predicted_recall_pct`; later phases add fields increm
 | `POST /flashcards/{id}/review` + `confidence` | 3 |
 | `GET /stats/calibration` | 3 |
 | `GET /stats` → `deck_insights` | 4 |
-| `GET /stats/forecast` | 6 |
-| `POST /decks/generate` | 7 |
-| `POST /flashcards/{id}/enrich` | 8 |
-| `POST /flashcards/{id}/grade` | 9 |
+| `GET /stats/forecast` | 4 |
+| `POST /decks/generate` | 5 (#7) |
+| `POST /decks/{id}/import-candidates` | 5 (#7) |
+| `POST /flashcards/{id}/enrich` | 5 (#8) |
+| `POST /flashcards/{id}/grade` | 6 (#9) |
 
 ---
 
@@ -249,6 +317,8 @@ Phase 1 ships `quality` + `predicted_recall_pct`; later phases add fields increm
 
 - Custom neural scheduler before FSRS is tuned
 - LLM auto-grading on every card (cost + latency)
+- LLM API keys in native apps or legacy web frontend
+- Public/hosted Purrfect Recall API (Phase 5 works locally with env keys)
 - Server-side audio storage for pronunciation
 - Full Anki `.apkg` import (separate project)
 
