@@ -1,0 +1,43 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Environment files
+.env
+.env.*
+
+# Project files
+mzfile
+
+# Editors and OS
+.DS_Store
+.envrc
+.envrc.swp
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# Node modules (frontend, if any)
+node_modules/
